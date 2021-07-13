@@ -1,2 +1,2 @@
-# django-kmitl-charmschool
+# KMITL Charm School
 KMITL Charm School web-application using pure django.
