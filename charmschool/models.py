@@ -18,14 +18,14 @@ class Student(models.Model):
     class Meta:
         ordering = ['group_ref', 'student_id']
         
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     gender = models.CharField(max_length=6, choices=gender_choices)
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=200)
     student_id = models.IntegerField()
     email_ref = models.EmailField()
-    group_ref = models.CharField(max_length=25)
-    score = models.PositiveIntegerField(default=10, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    group_ref = models.IntegerField()
+    score = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):
         return str(self.user)
@@ -93,11 +93,11 @@ class GroupData(models.Model):
         ('อาทิตย์', 'อาทิตย์')
     ]
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
-    description = models.CharField(max_length=256)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    study_on = models.CharField(choices=weekday_choices, max_length=10)
-    place = models.CharField(max_length=100)
+    description = models.CharField('คำอธิบาย',max_length=256)
+    start_time = models.TimeField('เริ่มเรียน')
+    end_time = models.TimeField('เลิกเรียน')
+    study_on = models.CharField('วันที่เรียน',choices=weekday_choices, max_length=10)
+    place = models.CharField('สถานที่เรียน', max_length=100)
 
     def __str__(self):
         return str(self.group)

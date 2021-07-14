@@ -3,12 +3,12 @@ from .models import *
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ['group_ref','student_id', 'gender', 'name', 'surname']
+    list_display = ['user','group_ref','student_id', 'gender', 'name', 'surname']
     list_filter = ['group_ref', 'gender']
     
 @admin.register(Instructor)
 class InstructorAdmin(admin.ModelAdmin):
-    list_display = ['gender','name','surname', 'type']
+    list_display = ['user','gender','name','surname', 'type']
 
 @admin.register(Course_Content)
 class ContentAdmin(admin.ModelAdmin):

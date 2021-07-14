@@ -3,13 +3,39 @@
 {% load static %}
 
 {% block content %}
-    <h3 class='my-4 text-center'>กลุ่มเรียนของท่าน</h3>
+    <h2 class='my-4 text-center'>กลุ่มเรียนของท่าน</h2>
     {% if user.is_superuser %}
-        <button class="btn btn-success ms-3">
+    <div class="col-8 m-3">
+        <button class="btn btn-success" data-bs-toggle="collapse" href="#AddUserForm" 
+        role="button" aria-expanded="false" aria-controls="collapseExample">
             <i class="bi bi-plus"></i>
              เพิ่มกลุ่มเรียน
         </button>
+        <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
+        <form action="creategroup/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="mb-3">
+                <label for="id_datacsv"> ข้อมูลนักศึกษาในกลุ่มเรียน: </label><br/>
+                <input type="file" name="datacsv">
+                <p> ไฟล์ .csv นี้ต้องแบ่งเป็น 4 คอลัมน์คือ รหัสนักศึกษา คำนำหน้า ชื่อ นามสกุล</p>
+            </div>
+            <div class="text-right">
+            <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+            </div>
+        </form>
+    </div>
+    </div>
     {% endif %}
+    <div>{% include 'components/messages.html' %}</div>
     <div class="row">
     {% for group in groups %}
     <div class="col-lg-6">

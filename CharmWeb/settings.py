@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'gdstorage',
     #3rd party apps
+    'import_export',
+    'crispy_forms',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -169,3 +171,16 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
+
+#Crispyforms
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+#Messages
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-secondary',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+ }
