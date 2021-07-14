@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% load static %}
+
+{% block content %}
+    <h3 class='my-4 text-center'>กลุ่มเรียนของท่าน</h3>
+    {% if user.is_superuser %}
+        <button class="btn btn-success ms-3">
+            <i class="bi bi-plus"></i>
+             เพิ่มกลุ่มเรียน
+        </button>
+    {% endif %}
+    <div class="row">
+    {% for group in groups %}
+    <div class="col-lg-6">
+    <div class="card m-3">
+        <div class="card-body">
+            <h4>{{group.name}}</h4>
+            {% with group.groupdata as gd %}
+            <span class="snippets">{{gd.description}}<br/>
+            <b>วัน-เวลาเรียน:</b> {{gd.study_on}} {{gd.start_time|time:"H:i"}}-{{gd.end_time|time:"H:i"}} 
+            <b>สถานที่:</b> {{gd.place}} <br/>
+            </span>
+            <a href="/group/{{group.pk}}" class="btn btn-primary  mt-3">
+                <i class="bi bi-box-arrow-in-right"></i>
+                จัดการกลุ่มเรียนนี้
+            </a>
+            {% endwith %}
+        </div>
+    </div>
+    </div>
+    {% empty %}
+        <p>
+            ไม่มีข้อมูลของท่าน หากคิดว่านี่คือข้อผิดพลาด โปรดติดต่อผู้ดูแลระบบ
+        </p>
+    {% endfor %}
+    </div>
+
+  
+{% endblock content %}
