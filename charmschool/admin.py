@@ -12,18 +12,18 @@ class InstructorAdmin(admin.ModelAdmin):
 
 @admin.register(Course_Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ['pub_date']
+    list_display = ['author','subject','pub_date']
 @admin.register(Course_Comment)
 class CommentAdmin(ContentAdmin):
     pass
 
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display= ['pub_date', 'due_date']
+    list_display = ['subject','pub_date','due_date']
 
 @admin.register(Classwork)
 class ClassworkAdmin(admin.ModelAdmin):
-    list_display= ['submit_date', 'score']
+    list_display= ['assignment','submit_date', 'score']
 
 @admin.register(GroupData)
 class GroupDataAdmin(admin.ModelAdmin):

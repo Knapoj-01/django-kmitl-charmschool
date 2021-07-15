@@ -8,18 +8,23 @@ gd_storage = GoogleDriveStorage()
 
 gender_choices = [
     ('นาย', 'นาย'),
+    ('นาง', 'นาง'),
     ('นางสาว', 'นางสาว'),
+    ('อาจารย์', 'อาจารย์'),
+    ('ผู้ช่วยศาสตราจารย์', 'ผู้ช่วยศาสตราจารย์'),
+    ('รองศาสตราจารย์', 'รองศาสตราจารย์'),
+    ('ศาสตราจารย์', 'ศาสตราจารย์'),
 ]
 type_choices = [
-    ('IS', 'อาจารย์ผู้สอน'),
-    ('TA', 'นักศึกษาผู้ช่วยสอน')
+    ('อาจารย์ผู้สอน', 'อาจารย์ผู้สอน'),
+    ('นักศึกษาผู้ช่วยสอน', 'นักศึกษาผู้ช่วยสอน')
 ]
 class Student(models.Model):
     class Meta:
         ordering = ['group_ref', 'student_id']
         
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    gender = models.CharField(max_length=6, choices=gender_choices)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    gender = models.CharField(max_length=20, choices=gender_choices)
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=200)
     student_id = models.IntegerField()
@@ -32,10 +37,11 @@ class Student(models.Model):
 
 class Instructor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=6, choices=gender_choices)
+    groups = models.ManyToManyField(Group)
+    gender = models.CharField(max_length=30, choices=gender_choices)
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=200)
-    type = models.CharField(max_length=2, choices=type_choices)
+    type = models.CharField(max_length=30, choices=type_choices)
 
     def __str__(self):
         return str(self.user)
@@ -44,16 +50,17 @@ class Content_Base(models.Model):
     class Meta:
         abstract = True
 
-    author = models.OneToOneField(Instructor, on_delete=models.CASCADE)
+    author = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    visible_by = models.ManyToManyField(Group)
     pub_date = models.DateTimeField(default=timezone.now)
     content = models.CharField(max_length=3000)
     subject = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.subject
+        return str(self.subject)
 
 class Course_Content(Content_Base):
-    groups = models.ManyToManyField(Group)
+    description = models.CharField(max_length=256, null=True)
     class Meta:
         verbose_name = 'Course Content'
         verbose_name_plural = 'Course Contents'
@@ -63,6 +70,8 @@ class Assignment(Content_Base):
     max_score = models.IntegerField()
 
 class Course_Comment(Content_Base):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    visible_by = None
     class Meta:
         verbose_name = 'Course Comment'
         verbose_name_plural = 'Course Comments'

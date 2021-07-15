@@ -1,0 +1,57 @@
+{% extends "charmschool/base.html" %}
+{% load static %}
+{% block course_content %}
+<div class="m-3">
+    <h4>{{content.subject}}</h4>
+    <span class="snippets">{{content.description}}</span><br />
+    <small>
+        <b>โพสต์โดย:</b> {{content.author.name}} {{content.author.surname}}
+        <b>เมื่อ: {{content.pub_date|date:"d M Y"}} {{content.pub_date|time:"H:i"}}</b>
+    </small>
+    <hr />
+    {{content.content}}
+    <h4 class='my-3'>ความคิดเห็น</h4>
+    {% for comment in comments %}
+    <div class="commented-section mt-2 p-3" style='background-color: lemonchiffon'>
+        <div class="d-flex flex-row align-items-center commented-user">
+            <h5 class="mr-2">{{comment.author}}</h5><span class="ms-5 mb-1">{{comment.pub_date}}</span>
+        </div>
+        <div class="comment-text-sm">
+            {{ comment.content }}
+        </div>
+        {% if comment.author == user %}
+        <div class="d-sm-flex flex-sm-row-reverse">
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="comment_pk" value='{{comment.pk}}'>
+                <input type="submit" name ='delete' class="btn btn-primary btn-sm"value='ลบความคิดเห็นนี้'>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    <button class="btn btn-success mt-3" data-bs-toggle="collapse" href="#AddUserForm" 
+        role="button" aria-expanded="false" aria-controls="collapseExample">
+            <i class="bi bi-plus"></i>
+             เพิ่มความคิดเห็น
+        </button>
+        <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
+        <form action="" method="post" >
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="d-sm-flex flex-sm-row-reverse">
+            <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock course_content %}

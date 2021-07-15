@@ -1,0 +1,69 @@
+<div class="card">
+    <div class="card-header" style='background-color: peachpuff;'>
+        <small><b>การบ้านที่ได้รับมอบหมาย (ยังไม่ส่ง)</b></small>
+    </div>
+    <div class="card-body">
+        {% if assignments %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">รายการ</th>
+                    <th scope="col">วันที่โพสต์</th>
+                    <th scope="col">กำหนดส่ง</th>
+                    <th scope="col">คะแนนเต็ม</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr class="clickable "  onclick='window.location="assignment/{{assignment.pk}}"' style='cursor:pointer;'>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{assignment.subject}}</td>
+                    <td>{{ assignment.pub_date|date:"d/m/Y" }} {{ assignment.pub_date|time:"H:i" }}</td>
+                    <td>{{ assignment.due_date|date:"d/m/Y" }} {{ assignment.due_date|time:"H:i" }}</td>
+                    <td>{{assignment.max_score}}</td>
+                </tr>
+                {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <span>ไม่มีรายการ</span>
+        {% endif %}
+    </div>
+</div>
+<div class="card mt-3">
+    <div class="card-header" style='background-color: lightgreen;'>
+        <small><b>การบ้านที่ส่งแล้ว</b></small>
+    </div>
+    <div class="card-body">
+        {% if classworks %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">รายการ</th>
+                    <th scope="col">กำหนดส่ง</th>
+                    <th scope="col">วันที่ส่งจริง</th>
+                    <th scope="col">คะแนนเต็ม</th>
+                    <th scope="col">คะแนนที่ได้</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for classwork in classworks %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{classwork.subject}}</td>
+                    <td>{{ classwork.pub_date|date:"d/m/Y" }} {{ classwork.pub_date|time:"H:i" }}</td>
+                    <td>{{ classwork.assignment.due_date|date:"d/m/Y" }} {{ classwork.assignment.due_date|time:"H:i" }}</td>
+                    <td>{{classwork.assignment.max_score}}</td>
+                </tr>
+                {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <span>ไม่มีรายการ</span>
+        {% endif %}
+    </div>
+</div>

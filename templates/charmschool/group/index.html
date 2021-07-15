@@ -1,0 +1,27 @@
+{% extends "charmschool/base.html" %}
+{% load static %}
+{%block course_content%}
+<div class="group card">
+    <div class="group-assignment m-3">
+        <h4 class='mb-3'>การบ้าน</h4>
+        {% include 'components/hw_student.html'%}
+    </div>
+    <div class="group-content m-3 ">
+        <h4 class='mb-3'>เนื้อหา/ข่าวประกาศ</h4>
+        <div class="list-group">
+            {% for content in course_contents %}
+            <a href="content/{{content.pk}}/" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mt-1">{{content.subject}}</h5>
+                    <small class='text'>3 days ago <br /> <span class="badge bg-primary rounded-pill">14</span></small>
+                </div>
+                <p class="mb-1">{{content.description}}</p>
+                <small><b>โพสต์โดย:</b> {{content.author.name}} {{content.author.surname}}</small>
+            </a>
+            {% empty %}
+            <p>ยังไม่มีเนื้อหา</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock course_content %}

@@ -5,7 +5,7 @@
 {% block content %}
     <h2 class='my-4 text-center'>กลุ่มเรียนของท่าน</h2>
     {% if user.is_superuser %}
-    <div class="col-8 m-3">
+    <div class="col-lg-8 m-3">
         <button class="btn btn-success" data-bs-toggle="collapse" href="#AddUserForm" 
         role="button" aria-expanded="false" aria-controls="collapseExample">
             <i class="bi bi-plus"></i>
@@ -26,7 +26,10 @@
             <div class="mb-3">
                 <label for="id_datacsv"> ข้อมูลนักศึกษาในกลุ่มเรียน: </label><br/>
                 <input type="file" name="datacsv">
-                <p> ไฟล์ .csv นี้ต้องแบ่งเป็น 4 คอลัมน์คือ รหัสนักศึกษา คำนำหน้า ชื่อ นามสกุล</p>
+                <p> 
+                    ไฟล์ .csv นี้ต้องแบ่งเป็น 4 คอลัมน์คือ รหัสนักศึกษา คำนำหน้า ชื่อ นามสกุล 
+                    และใช้ Header ของแต่ละคอลัมน์เป็น student_id, gender, name, surname <b>เท่านั้น</b>
+                </p>
             </div>
             <div class="text-right">
             <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
@@ -35,7 +38,7 @@
     </div>
     </div>
     {% endif %}
-    <div>{% include 'components/messages.html' %}</div>
+    <div>{% if user.is_superuser %}{% include 'components/messages.html' %}{% endif %}</div>
     <div class="row">
     {% for group in groups %}
     <div class="col-lg-6">
@@ -49,16 +52,18 @@
             </span>
             <a href="/group/{{group.pk}}" class="btn btn-primary  mt-3">
                 <i class="bi bi-box-arrow-in-right"></i>
-                จัดการกลุ่มเรียนนี้
+                เข้าสู่กลุ่มเรียนนี้
             </a>
             {% endwith %}
         </div>
     </div>
     </div>
     {% empty %}
+    <div class="mb-3">
         <p>
             ไม่มีข้อมูลของท่าน หากคิดว่านี่คือข้อผิดพลาด โปรดติดต่อผู้ดูแลระบบ
         </p>
+    </div>
     {% endfor %}
     </div>
 

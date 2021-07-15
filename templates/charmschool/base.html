@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% load static %}
+
+{% block content %}
+<div class="hero m-3">
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col-6">
+            <img src="{% static 'assets/images/hero-image.jpg' %}" alt="Charm" style='width: 100%;'>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>
+<div class="row mx-3">
+    <div class="col-md-4">
+        <div class="group-info card">
+            <div class="group-data m-3">
+                <h3>{{groupdata.group.name}}</h3>
+                <span class="description">{{groupdata.description}}</span><br />
+                <span class="snippets"> <b>วันที่เรียน:</b> {{groupdata.study_on}} <b>เวลาเรียน:</b>
+                    {{groupdata.start_time|time:"H:i"}} - {{groupdata.end_time|time:"H:i"}}</span>
+            </div>
+            <div class="group-instructors m-3">
+                <h4>ผู้สอน</h4>
+                <ul>
+                    {% for instructor in instructors %}
+                    {% with instructor as i %}
+                    <li>
+                        {{i.gender}} {{i.name}} {{i.surname}}<br />
+                        {{i.type}}
+                    </li>
+                    {% endwith %}
+                    {%empty%}
+                    <p>ยังไม่มีอาจารย์ผู้สอน</p>
+                    {% endfor %}
+                </ul>
+            </div>
+            <a href="/group/{{groupdata.pk}}" class="btn btn-primary mx-5 mb-3">กลับหน้ากลุ่มเรียน</a>
+        </div>
+    </div>
+    <div class="col-md-8">
+    <div class="group card">
+        {% block course_content %}
+        {% endblock course_content %}
+    </div>
+    </div>
+</div>
+
+{% endblock content %}
