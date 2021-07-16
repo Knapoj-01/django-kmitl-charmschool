@@ -2,14 +2,13 @@
     <div class="card-header" style='background-color: peachpuff;'>
         <small><b>การบ้านที่ได้รับมอบหมาย (ยังไม่ส่ง)</b></small>
     </div>
-    <div class="card-body">
+    <div class="card-body table-responsive">
         {% if assignments %}
-        <table class="table table-hover">
+        <table class="table table-hover ">
             <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">รายการ</th>
-                    <th scope="col">วันที่โพสต์</th>
                     <th scope="col">กำหนดส่ง</th>
                     <th scope="col">คะแนนเต็ม</th>
                 </tr>
@@ -19,8 +18,7 @@
                 <tr class="clickable "  onclick='window.location="assignment/{{assignment.pk}}"' style='cursor:pointer;'>
                     <th scope="row">{{forloop.counter}}</th>
                     <td>{{assignment.subject}}</td>
-                    <td>{{ assignment.pub_date|date:"d/m/Y" }} {{ assignment.pub_date|time:"H:i" }}</td>
-                    <td>{{ assignment.due_date|date:"d/m/Y" }} {{ assignment.due_date|time:"H:i" }}</td>
+                    <td>{{ assignment.due_date|date:"d/m/Y" }} {{ assignment.due_date|time:"H:i" }} น.</td>
                     <td>{{assignment.max_score}}</td>
                 </tr>
                 {% endfor %}
@@ -36,7 +34,7 @@
     <div class="card-header" style='background-color: lightgreen;'>
         <small><b>การบ้านที่ส่งแล้ว</b></small>
     </div>
-    <div class="card-body">
+    <div class="card-body table-responsive">
         {% if classworks %}
         <table class="table table-hover">
             <thead>
@@ -45,18 +43,19 @@
                     <th scope="col">รายการ</th>
                     <th scope="col">กำหนดส่ง</th>
                     <th scope="col">วันที่ส่งจริง</th>
-                    <th scope="col">คะแนนเต็ม</th>
-                    <th scope="col">คะแนนที่ได้</th>
+                    <th scope="col">คะแนน</th>
                 </tr>
             </thead>
             <tbody>
                 {% for classwork in classworks %}
-                <tr>
+                <tr  class="clickable "  onclick='window.location="assignment/{{classwork.assignment.pk}}"' style='cursor:pointer;'>
                     <th scope="row">{{forloop.counter}}</th>
-                    <td>{{classwork.subject}}</td>
-                    <td>{{ classwork.pub_date|date:"d/m/Y" }} {{ classwork.pub_date|time:"H:i" }}</td>
-                    <td>{{ classwork.assignment.due_date|date:"d/m/Y" }} {{ classwork.assignment.due_date|time:"H:i" }}</td>
-                    <td>{{classwork.assignment.max_score}}</td>
+                    <td>{{classwork.assignment}}</td>
+                    <td>{{ classwork.assignment.due_date|date:"d/m/Y" }} {{ classwork.assignment.due_date|time:"H:i" }} น.</td>
+                    <td>{{ classwork.submit_date|date:"d/m/Y" }} {{ classwork.submit_date|time:"H:i" }} น.</td>
+                    <td>
+                        {% if classwork.score %}{{classwork.score}}/{{classwork.assignment.max_score}}{%else%} รอ{% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
                 </tr>

@@ -14,15 +14,7 @@
         <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
         <form action="creategroup/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {% for field in form %}
-            <div class="mb-3">
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-                {% if field.help_text %}
-                    <p class="help">{{ field.help_text|safe }}</p>
-                {% endif %}
-            </div>
-            {% endfor %}
+            {% include "components/form_base.html" %}
             <div class="mb-3">
                 <label for="id_datacsv"> ข้อมูลนักศึกษาในกลุ่มเรียน: </label><br/>
                 <input type="file" name="datacsv">
@@ -32,7 +24,9 @@
                 </p>
             </div>
             <div class="text-right">
-            <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+            <div class="d-sm-flex flex-sm-row-reverse">
+                <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+            </div>
             </div>
         </form>
     </div>

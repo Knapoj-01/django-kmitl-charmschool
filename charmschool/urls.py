@@ -9,5 +9,5 @@ urlpatterns = [
     path('dashboard/creategroup/', AddGroupView.as_view()),
     path('group/<int:group_pk>/', ClassroomView.as_view(extra_context={'title_name': 'ห้องเรียน'}), name='classroom'),
     path('group/<int:group_pk>/content/<int:content_pk>/', ContentView.as_view(extra_context={'title_name': 'เนื้อหา'}), name='content'),
-    #path('assignment/<int:pk>/', AssignmentView.as_view())
+    path('group/<int:group_pk>/assignment/<int:assignment_pk>/', AssignmentView.as_view(extra_context={'title_name': 'การบ้าน'}), name='assignment'),
 ]

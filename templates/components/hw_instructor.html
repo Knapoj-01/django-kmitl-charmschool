@@ -1,0 +1,36 @@
+<div class="card mt-3">
+    <div class="card-header" style='background-color: peachpuff;'>
+        <small><b>การบ้านที่มอบหมาย</b></small>
+    </div>
+    <div class="card-body table-responsive">
+        {% if assignments %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">รายการ</th>
+                    <th scope="col">กำหนดส่ง</th>
+                    <th scope="col">วันที่มอบหมาย</th>
+                    <th scope="col">คะแนนเต็ม</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr  class="clickable "  onclick='window.location="assignment/{{assignment.pk}}"' style='cursor:pointer;'>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{assignment.subject}}</td>
+                    <td>{{assignment.due_date|date:"d/m/Y" }} {{assignment.due_date|time:"H:i" }} น.</td>
+                    <td>{{assignment.pub_date|date:"d/m/Y" }} {{assignment.pub_date|time:"H:i" }} น.</td>
+                    <td>
+                        {{assignment.max_score}}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <span>ไม่มีรายการ</span>
+        {% endif %}
+    </div>
+</div>

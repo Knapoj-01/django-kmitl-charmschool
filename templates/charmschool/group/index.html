@@ -1,10 +1,14 @@
 {% extends "charmschool/base.html" %}
 {% load static %}
 {%block course_content%}
-<div class="group card">
+<div class="group">
     <div class="group-assignment m-3">
         <h4 class='mb-3'>การบ้าน</h4>
+        {% if is_student %}
         {% include 'components/hw_student.html'%}
+        {% else %}
+        {% include 'components/hw_instructor.html'%}
+        {% endif %}
     </div>
     <div class="group-content m-3 ">
         <h4 class='mb-3'>เนื้อหา/ข่าวประกาศ</h4>
@@ -13,10 +17,12 @@
             <a href="content/{{content.pk}}/" class="list-group-item list-group-item-action" aria-current="true">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mt-1">{{content.subject}}</h5>
-                    <small class='text'>3 days ago <br /> <span class="badge bg-primary rounded-pill">14</span></small>
                 </div>
                 <p class="mb-1">{{content.description}}</p>
-                <small><b>โพสต์โดย:</b> {{content.author.name}} {{content.author.surname}}</small>
+                <small>
+                    <b>โพสต์โดย:</b> {{content.author.name}} {{content.author.surname}}
+                    <b>เมื่อ:</b> {{content.pub_date|date:'d/m/Y'}} {{content.pub_date|time:'H:i'}} น.
+                </small>
             </a>
             {% empty %}
             <p>ยังไม่มีเนื้อหา</p>

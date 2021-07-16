@@ -79,15 +79,16 @@ class Course_Comment(Content_Base):
 
 
 class Classwork(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     assignment = models.OneToOneField(Assignment, on_delete=models.CASCADE)
+    message = models.CharField(max_length=500, null=True)
     submit_date = models.DateTimeField(default=timezone.now)
-    work = models.FileField(upload_to='classwork/{}'.format(str(assignment)), storage=gd_storage, null=True)
+    work = models.FileField(upload_to='classwork/{}'.format(str(assignment)), storage=gd_storage, null=True, blank=True)
     score = models.IntegerField(null=True)
     graded = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.user) + str(self.assignment)
+        return str(self.user) + ' '+ str(self.assignment)
 
 class GroupData(models.Model):
     class Meta:

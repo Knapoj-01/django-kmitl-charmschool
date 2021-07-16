@@ -34,3 +34,22 @@ class AddCommentForm(forms.ModelForm):
         model.subject = Course_Content.objects.get(pk=content_pk)
         model.save()
         return model
+
+class AddClassWorkForm(forms.ModelForm):
+    class Meta:
+        model = Classwork
+        fields = ['message','work']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 3, 'class':'form-control'}),
+            'work': forms.FileInput(attrs={'accept':'.pdf,.jpg,.jpeg'})
+        }
+        labels= {
+            'message': 'ข้อความ',
+            'work': 'ไฟล์งานที่จะส่ง'
+        }
+    def save(self, request, assignment_pk):
+        model =  super().save(commit=False)
+        model.user = request.user
+        model.assignment = Assignment.objects.get(pk=assignment_pk)
+        model.save()
+        return model

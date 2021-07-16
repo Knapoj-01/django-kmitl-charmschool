@@ -1,0 +1,41 @@
+{% extends "charmschool/base.html" %}
+{% load static %}
+{% block course_content %}
+<div class="m-3">
+    <h4>{{assignment.subject}}</h4>
+    <span class="snippets">คะแนนเต็ม {{assignment.max_score}} คะแนน</span><br />
+    <small>
+        <b>โพสต์โดย:</b> {{assignment.author.name}} {{assignment.author.surname}}
+        <b>เมื่อ: {{assignment.pub_date|date:"d F Y"}} {{assignment.pub_date|time:"H:i"}}</b>
+    </small>
+    <hr />
+    {{assignment.content}}
+    <h4 class='mt-3'>งานของท่าน</h4>
+    {% if not classwork %}
+    <p>ยังไม่มีงานส่ง</p>
+    <button class="btn btn-success" data-bs-toggle="collapse" href="#AddUserForm" role="button" aria-expanded="false"
+        aria-controls="collapseExample">
+        <i class="bi bi-plus"></i>
+        เพิ่มงาน
+    </button>
+    <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include "components/form_base.html" %}
+            <div class="d-sm-flex flex-sm-row-reverse">
+                <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    {{classwork.message}}
+    {% if classwork.work %}
+    <h5 class='mt-3'>ไฟล์แนบ</h5>
+    {{classwork.work}} <a href="https://docs.google.com/viewer?url={{classwork.work.url}}" target="_blank" rel="noopener noreferrer">เปิดในแท็บใหม่</a>  
+    <a href="{{classwork.work.url}}">ดาวน์โหลด</a>
+     
+    {% endif %}
+    {% endif %}
+</div>
+
+{% endblock course_content %}
