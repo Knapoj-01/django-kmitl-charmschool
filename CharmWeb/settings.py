@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import environ, os
+import django_heroku
 
 env = environ.Env(
-     SITE_ID=(int, 1)
+     SITE_ID=(int, 1),
+     DEBUG=(bool,True)
 )
 environ.Env.read_env()
 
@@ -28,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['https://kmitl-charmschool.herokuapp.com', '127.0.0.1', 'localhost']
 
@@ -185,3 +187,6 @@ MESSAGE_TAGS = {
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger',
  }
+
+ # Activate Django-Heroku.
+django_heroku.settings(locals())
