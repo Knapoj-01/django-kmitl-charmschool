@@ -80,7 +80,7 @@ class Course_Comment(Content_Base):
 
 class Classwork(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    assignment = models.OneToOneField(Assignment, on_delete=models.CASCADE)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     message = models.CharField(max_length=500, null=True)
     submit_date = models.DateTimeField(default=timezone.now)
     work = models.FileField(upload_to='classwork/{}'.format(str(assignment)), storage=gd_storage, null=True, blank=True)

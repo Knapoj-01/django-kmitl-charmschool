@@ -15,9 +15,13 @@
     <div class="commented-section mt-2 p-3" style='background-color: lemonchiffon'>
         <div class="d-flex flex-row justify-content-sm-between">
             <h6 class="mr-2">
-                {% if is_student %}
+                {% if comment.author.is_student %}
                 {% with comment.author.student_set.first as stu %}
                     {{stu.student_id}} {{stu.gender}} {{stu.name}} {{stu.surname}}
+                {% endwith %}
+                {% else %}
+                {% with comment.author.instructor as instruct %}
+                    {{instruct.gender}} {{instruct.name}} {{instruct.surname}}
                 {% endwith %}
                 {% endif %}
             </h6>

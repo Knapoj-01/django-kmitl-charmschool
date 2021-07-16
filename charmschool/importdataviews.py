@@ -10,12 +10,10 @@ from .mixins import SuperuserRequiredMixin
 from io import TextIOWrapper
 from django.shortcuts import redirect
 from django.contrib import messages
+import copy
 
-def import_data(request,file, group_pk = 0 ,check=False ,clear_old_data = False):
+def import_data(dataset, group_pk = 0 ,check=False):
     event_resource = resources.modelresource_factory(model=Student)()
-    dataset = tablib.Dataset(
-        headers=['student_id', 'gender', 'name', 'surname']
-    ).load(file.read(), format='csv')
     if check == True:
         confilctset = []
         for el in dataset:
@@ -33,8 +31,6 @@ def import_data(request,file, group_pk = 0 ,check=False ,clear_old_data = False)
     )
     result = event_resource.import_data(dataset, dry_run=True)  # Test the data import
     if not result.has_errors():
-        if clear_old_data:
-            Student.objects.filter(group_ref = group_pk).delete()
         event_resource.import_data(dataset, dry_run=False) 
         return True
     return False
@@ -44,7 +40,10 @@ class AddGroupView(SuperuserRequiredMixin, View):
         form = AddGroupDataForm(request.POST)
         if form.is_valid:
             file = TextIOWrapper(request.FILES['datacsv'].file, encoding='utf-8-sig', errors='replace')
-            conflictset = import_data(request,file, check=True)
+            dataset = tablib.Dataset(
+                headers=['student_id', 'gender', 'name', 'surname']
+                ).load(file.read(), format='csv')
+            conflictset = import_data(dataset, check=True)
             if conflictset:
                 messages.error(request, 
                     r'<b>พบข้อผิดพลาด:</b> ข้อมูลที่พยายามนำเข้าต่อไปนี้ <ul>{}</ul> ซ้ำกับข้อมูลนักศึกษาที่มีอยู่แล้ว'.format(''.join(conflictset))
@@ -56,7 +55,7 @@ class AddGroupView(SuperuserRequiredMixin, View):
             request.user.groups.add(group)
             gd.group = group
             gd.save()
-            status = import_data(request,file,group.pk)
+            status = import_data(dataset,group.pk)
             if status:
                 messages.success(request, r'<b>สำเร็จ:</b> สร้างกลุ่มเรียน และบันทึกข้อมูลนักศึกษาเรียบร้อย')
             else:   
