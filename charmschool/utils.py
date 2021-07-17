@@ -1,4 +1,3 @@
-from django.http import HttpResponseForbidden
 from django.core.exceptions import PermissionDenied
 
 def check_group_visiblilty(content, user):

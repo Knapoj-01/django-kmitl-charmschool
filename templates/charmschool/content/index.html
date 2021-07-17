@@ -7,6 +7,14 @@
     <small>
         <b>โพสต์โดย:</b> {{content.author.name}} {{content.author.surname}}
         <b>เมื่อ: {{content.pub_date|date:"d F Y"}} {{content.pub_date|time:"H:i"}} น.</b>
+        <br/>
+        {% if is_instructor %}
+            <b>กลุ่มที่สามารถเข้าถึง:</b> 
+            {% for group in content.visible_by.all %} 
+                <span class="badge rounded-pill bg-info text-dark">{{group}}</span>
+            {% endfor %}
+            <br/>
+        {% endif %}
     </small>
     <hr />
     {{content.content}}
@@ -16,12 +24,13 @@
         <div class="d-flex flex-row justify-content-sm-between">
             <h6 class="mr-2">
                 {% if comment.author.is_student %}
-                {% with comment.author.student_set.first as stu %}
+                {% with comment.author.student as stu %}
                     {{stu.student_id}} {{stu.gender}} {{stu.name}} {{stu.surname}}
                 {% endwith %}
                 {% else %}
                 {% with comment.author.instructor as instruct %}
-                    {{instruct.gender}} {{instruct.name}} {{instruct.surname}}
+                    <span class="badge rounded-pill bg-info text-dark">ผู้สอน</span>
+                    {{instruct.name}} {{instruct.surname}}  
                 {% endwith %}
                 {% endif %}
             </h6>

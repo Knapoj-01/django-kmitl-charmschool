@@ -14,11 +14,12 @@
     <title>{{title_name}}</title>
 </head>
 <body>
+    {% include "components/profile_modal.html" %}
     {% block navbar %}
         {% include 'components/navbar.html' %}
     {% endblock navbar %}
     <div class="container-fluid">
-        <div class="content p-3">
+        <div class="content p-lg-3">
             {% block content %}
             {% endblock content %}
         </div>

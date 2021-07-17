@@ -1,6 +1,4 @@
 from django import forms
-from django.db.models import fields
-from django.forms import widgets
 from .models import *
 defaultattr = {'class':'form-control'}
 class AddGroupDataForm(forms.ModelForm):
@@ -49,7 +47,7 @@ class AddClassWorkForm(forms.ModelForm):
         }
     def save(self, request, assignment_pk):
         model =  super().save(commit=False)
-        model.user = request.user
+        model.student = request.user.student
         model.assignment = Assignment.objects.get(pk=assignment_pk)
         model.save()
         return model

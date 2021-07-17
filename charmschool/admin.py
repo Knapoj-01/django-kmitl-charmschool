@@ -23,7 +23,7 @@ class AssignmentAdmin(admin.ModelAdmin):
 
 @admin.register(Classwork)
 class ClassworkAdmin(admin.ModelAdmin):
-    list_display= ['user','assignment','submit_date', 'score']
+    list_display= ['student','assignment','submit_date', 'score']
 
 @admin.register(GroupData)
 class GroupDataAdmin(admin.ModelAdmin):

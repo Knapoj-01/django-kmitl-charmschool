@@ -1,6 +1,4 @@
 from django.views.generic import View
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
 import tablib
 from import_export import resources
 from .models import Student

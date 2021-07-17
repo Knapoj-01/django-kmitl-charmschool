@@ -1,7 +1,5 @@
-from typing import List
-from django.db import models
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import TemplateView, ListView, FormView
+from django.shortcuts import redirect, get_object_or_404
+from django.views.generic import TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from .forms import *
@@ -33,14 +31,18 @@ class ClassroomView(GetInfoMixin, LoginRequiredMixin, TemplateView):
     def get_context_data(self, group_pk, **kwargs):
         context = super().get_context_data(group_pk,**kwargs)
         group = GroupData.objects.get(pk=group_pk)
-        context['assignments'] = Assignment.objects.filter(
-            visible_by__id__exact=group.pk
-            ).exclude(
-                classwork__in= Classwork.objects.filter(user=self.request.user)
-                ).order_by('due_date','pub_date')
         if self.request.user.is_student():
             context['classworks'] = Classwork.objects.filter(user=self.request.user)
-        context['course_contents'] = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('pub_date')
+            context['assignments'] = Assignment.objects.filter(
+                visible_by__id__exact=group.pk
+                ).exclude(
+                    classwork__in= Classwork.objects.filter(user=self.request.user)
+                    ).order_by('due_date','pub_date')
+        else:
+            context['assignments'] = Assignment.objects.filter(
+                visible_by__id__exact=group.pk
+                ).order_by('due_date','pub_date')
+        context['course_contents'] = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('-pub_date')
         return context
     
 class ContentView(GetInfoMixin, LoginRequiredMixin, TemplateView):
@@ -67,13 +69,45 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
         context = super().get_context_data(group_pk,**kwargs)
         context["assignment"] = Assignment.objects.get(pk = assignment_pk)
         context['form'] = AddClassWorkForm
-        classwork_queryset = Classwork.objects.filter(
-            assignment__id = assignment_pk, user = self.request.user
+        if self.request.user.is_instructor():
+            return_list = []
+            return_classwork = []
+            student_list = Student.objects.filter(
+                group_ref=group_pk
+                )
+            for obj in student_list:
+                if obj.classwork_set:
+                    classwork = obj.classwork_set.filter(assignment__id = assignment_pk)
+                    if classwork:
+                        element = [obj , classwork[0]]
+                        return_classwork.append(element)
+                    else: return_list.append([obj])
+            context['classwork_list'] = return_classwork+return_list
+        else:
+            classwork_queryset = Classwork.objects.filter(
+            assignment__id = assignment_pk, student = self.request.user.student
             )
-        if classwork_queryset: context['classwork'] = classwork_queryset[0]
+            if classwork_queryset: context['classwork'] = classwork_queryset[0]
         return context
     def post(self,request,group_pk, assignment_pk,*args, **kwargs):
         form = AddClassWorkForm(request.POST, request.FILES)
         if form.is_valid():
             form.save(request, assignment_pk)
+        elif 'score' in request.POST.keys():
+            classwork = Classwork.objects.get(pk = request.POST.get('classwork_id'))
+            classwork.score = request.POST.get('score')
+            classwork.save()
         return redirect(self.request.path_info)
+
+class GroupMembersView(GetInfoMixin,LoginRequiredMixin,ListView):
+    template_name = 'charmschool/group/members.html'
+    model = Student
+    context_object_name = 'members'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(self.kwargs.get('group_pk'),**kwargs)
+        return context
+    def get_queryset(self):
+        queryset = Student.objects.filter(group_ref=self.kwargs.get('group_pk')).order_by('student_id')
+        return queryset
+    
+    

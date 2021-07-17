@@ -1,0 +1,29 @@
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">ข้อมูลส่วนตัว</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <ul>
+      {% if user.student %}
+      {% with user.student as p %}
+            <li>รหัสนักศึกษา: {{p.student_id}}</li>
+            <li>ชื่อ-นามสกุล: {{p.gender}} {{p.name}} {{p.surname}}</li>
+        {% endwith %}
+        {% else %}
+          {% with user.instructor as p %}
+            <li>ชื่อ-นามสกุล: {{p.gender}} {{p.name}} {{p.surname}}</li>
+            <li>ประเภทผู้สอน: {{p.type}}</li>
+          {% endwith %}
+        {% endif %}
+            <li>กลุ่มเรียนที่มีสิทธ์เข้าถึง: {% for g in user.groups.all %}<span class="badge rounded-pill bg-info text-dark">{{g}}</span> {%empty%}ยังไม่มีกลุ่มเรียน{% endfor %}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+</div>

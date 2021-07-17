@@ -6,10 +6,20 @@
     <span class="snippets">คะแนนเต็ม {{assignment.max_score}} คะแนน</span><br />
     <small>
         <b>โพสต์โดย:</b> {{assignment.author.name}} {{assignment.author.surname}}
-        <b>เมื่อ: {{assignment.pub_date|date:"d F Y"}} {{assignment.pub_date|time:"H:i"}}</b>
+        <b>เมื่อ: {{assignment.pub_date|date:"d F Y"}} {{assignment.pub_date|time:"H:i"}} น.</b><br/>
+        {% if is_instructor %}
+            <b>กลุ่มที่สามารถเข้าถึง:</b> 
+            {% for group in assignment.visible_by.all %} 
+                <span class="badge rounded-pill bg-info text-dark">{{group}}</span>
+            {% endfor %}
+            <br/>
+        {% endif %}
+        <span class="badge rounded-pill bg-warning text-dark">กำหนดส่ง</span>  
+        <b>{{assignment.due_date|date:"d F Y"}} {{assignment.due_date|time:"H:i"}} น.</b>
     </small>
     <hr />
     {{assignment.content}}
+    {% if is_student %}
     <h4 class='mt-3'>งานของท่าน</h4>
     {% if not classwork %}
     <p>ยังไม่มีงานส่ง</p>
@@ -32,9 +42,12 @@
     {% if classwork.work %}
     <h5 class='mt-3'>ไฟล์แนบ</h5>
     {{classwork.work}} <a href="https://docs.google.com/viewer?url={{classwork.work.url}}" target="_blank" rel="noopener noreferrer">เปิดในแท็บใหม่</a>  
-    <a href="{{classwork.work.url}}">ดาวน์โหลด</a>
-     
+    <a href="{{classwork.work.url}}">ดาวน์โหลด</a> 
     {% endif %}
+    {% endif %}
+    {% else %}
+    <h4 class='mt-4'>สถานะการส่งการบ้าน</h4>
+    {% include "components/hw_instructor_list.html" %}
     {% endif %}
 </div>
 

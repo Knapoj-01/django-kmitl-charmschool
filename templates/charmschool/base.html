@@ -5,16 +5,16 @@
 {% block content %}
 <div class="hero m-3">
     <div class="row">
-        <div class="col">
+        <div class="col-lg">
         </div>
-        <div class="col-6">
+        <div class="col-lg-6">
             <img src="{% static 'assets/images/hero-image.jpg' %}" alt="Charm" style='width: 100%;'>
         </div>
-        <div class="col">
+        <div class="col-lg">
         </div>
     </div>
 </div>
-<div class="row mx-3">
+<div class="row mx-lg-3">
     <div class="col-md-4">
         <div class="group-info card">
             <div class="group-data m-3">
@@ -27,7 +27,7 @@
                 <h4>ผู้สอน</h4>
                 <ul>
                     {% for instructor in instructors %}
-                    {% with instructor as i %}
+                    {% with instructor.instructor as i %}
                     <li>
                         {{i.gender}} {{i.name}} {{i.surname}}<br />
                         {{i.type}}
@@ -38,7 +38,12 @@
                     {% endfor %}
                 </ul>
             </div>
-            <a href="/group/{{groupdata.pk}}" class="btn btn-primary mx-5 mb-3">กลับหน้ากลุ่มเรียน</a>
+            <a href="/group/{{groupdata.pk}}/members/" class="btn btn-primary mx-5 mb-1">
+                <i class="bi bi-people-fill me-3"></i> ดูสมาชิกในกลุ่มเรียนนี้
+            </a>
+            <a href="/group/{{groupdata.pk}}" class="btn btn-primary mx-5 mb-3">
+                <i class="bi bi-box-arrow-left me-3"></i> กลับหน้ากลุ่มเรียน
+            </a>
         </div>
     </div>
     <div class="col-md-8">
