@@ -32,11 +32,11 @@ class ClassroomView(GetInfoMixin, LoginRequiredMixin, TemplateView):
         context = super().get_context_data(group_pk,**kwargs)
         group = GroupData.objects.get(pk=group_pk)
         if self.request.user.is_student():
-            context['classworks'] = Classwork.objects.filter(user=self.request.user)
+            context['classworks'] = Classwork.objects.filter(student=self.request.user.student)
             context['assignments'] = Assignment.objects.filter(
                 visible_by__id__exact=group.pk
                 ).exclude(
-                    classwork__in= Classwork.objects.filter(user=self.request.user)
+                    classwork__in= Classwork.objects.filter(student=self.request.user.student)
                     ).order_by('due_date','pub_date')
         else:
             context['assignments'] = Assignment.objects.filter(
