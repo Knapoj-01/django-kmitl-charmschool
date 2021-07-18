@@ -42,6 +42,8 @@ class ClassroomView(GetInfoMixin, LoginRequiredMixin, TemplateView):
             context['assignments'] = Assignment.objects.filter(
                 visible_by__id__exact=group.pk
                 ).order_by('due_date','pub_date')
+            context['assignment_form'] = AddAssignmentForm(user_groups_queryset= self.request.user.groups.all())
+            context['content_form'] = AddContentForm(user_groups_queryset= self.request.user.groups.all())
         context['course_contents'] = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('-pub_date')
         return context
     

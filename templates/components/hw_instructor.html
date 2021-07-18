@@ -32,5 +32,22 @@
         {% else %}
         <span>ไม่มีรายการ</span>
         {% endif %}
+            <button class="btn btn-success mt-3" data-bs-toggle="collapse" href="#AddAssignmentForm" role="button"
+        aria-expanded="false" aria-controls="AddAssignmentForm">
+        <i class="bi bi-plus"></i>
+        เพิ่มการบ้าน
+        </button>
+        <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddAssignmentForm">
+            <form action="addcontent/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="assignment">
+                {% with assignment_form as  form  %}
+                {% include "components/form_base.html" %}
+                {% endwith %}
+                <div class="d-sm-flex flex-sm-row-reverse">
+                    <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

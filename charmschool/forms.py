@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import widgets
 from .models import *
 defaultattr = {'class':'form-control'}
 class AddGroupDataForm(forms.ModelForm):
@@ -8,8 +9,8 @@ class AddGroupDataForm(forms.ModelForm):
         exclude = ['group']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3, 'class':'form-control'}),
-            'start_time': forms.TimeInput(attrs=defaultattr),
-            'end_time': forms.TimeInput(attrs=defaultattr),
+            'start_time': forms.TimeInput(attrs={'type':'time','class':'form-control'}),
+            'end_time': forms.TimeInput(attrs={'type':'time','class':'form-control'}),
             'study_on' : forms.Select(attrs={'class':'form-select'}),
             'place' : forms.TextInput(attrs=defaultattr) 
         }
@@ -45,9 +46,59 @@ class AddClassWorkForm(forms.ModelForm):
             'message': 'ข้อความ',
             'work': 'ไฟล์งานที่จะส่ง'
         }
-    def save(self, request, assignment_pk):
-        model =  super().save(commit=False)
-        model.student = request.user.student
-        model.assignment = Assignment.objects.get(pk=assignment_pk)
-        model.save()
-        return model
+
+
+class AddAssignmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user_groups = kwargs.pop('user_groups_queryset')
+        super().__init__(*args, **kwargs)
+        self.fields['visible_by'].queryset = user_groups
+    class Meta:
+        model = Assignment
+        fields = '__all__'
+        exclude = ['author','pub_date']
+        widgets = {
+            'subject': forms.TextInput(attrs=defaultattr),
+            'content': forms.Textarea(attrs={'rows': 10, 'class':'form-control'}),
+            'due_date': forms.DateTimeInput(attrs={'type':"datetime-local", 'class':'form-control'}),
+            'max_score':forms.NumberInput(attrs={'rows': 3, 'class':'form-control', 'min':0}),
+        }
+        labels = {
+            'subject': 'หัวข้อการบ้าน',
+            'due_date': 'กำหนดส่ง',
+            'content': 'เนื้อหาการบ้าน',
+            'max_score': 'คะแนนเต็ม',
+        }
+    field_order = ['subject','due_date', 'visible_by', 'content', 'max_score']
+    visible_by = forms.ModelMultipleChoiceField(
+        queryset= None,
+        widget=forms.CheckboxSelectMultiple,
+        label = 'กลุ่มที่เข้าถึงได้'
+    )
+
+class AddContentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user_groups = kwargs.pop('user_groups_queryset')
+        super().__init__(*args, **kwargs)
+        self.fields['visible_by'].queryset = user_groups
+        
+    class Meta:
+        model = Course_Content
+        fields = '__all__'
+        exclude = ['author','pub_date']
+        widgets = {
+            'subject': forms.TextInput(attrs=defaultattr),
+            'content': forms.Textarea(attrs={'rows': 10, 'class':'form-control'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'class':'form-control'}),
+        }
+        labels = {
+            'subject': 'หัวข้อเนื้อหา',
+            'description': 'คำอธิบายเนื้อหา',
+            'content': 'เนื้อหา',
+        }
+    field_order = ['subject','description', 'visible_by', 'content', 'max_score']
+    visible_by = forms.ModelMultipleChoiceField(
+        queryset= None,
+        widget=forms.CheckboxSelectMultiple,
+        label = 'กลุ่มที่เข้าถึงได้'
+    )

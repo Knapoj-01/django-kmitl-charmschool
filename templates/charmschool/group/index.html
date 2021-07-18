@@ -28,6 +28,25 @@
             <p>ยังไม่มีเนื้อหา</p>
             {% endfor %}
         </div>
+        {% if not is_student %}
+             <button class="btn btn-success mt-3" data-bs-toggle="collapse" href="#AddContentForm" role="button"
+        aria-expanded="false" aria-controls="AddContentForm">
+        <i class="bi bi-plus"></i>
+        เพิ่มการบ้าน
+        </button>
+        <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddContentForm">
+            <form action="addcontent/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="content">
+                {% with content_form as form %}
+                {% include "components/form_base.html" %}
+                {% endwith %}
+                <div class="d-sm-flex flex-sm-row-reverse">
+                    <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock course_content %}
