@@ -17,7 +17,7 @@
         {% endif %}
     </small>
     <hr />
-    {{content.content}}
+    {{content.content|safe}}
     {% if is_instructor %}
         <div class="my-3">
             {% with editcontentform as form %}

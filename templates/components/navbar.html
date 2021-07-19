@@ -15,6 +15,7 @@
         </li>
       </ul>
     </div>
+    {% if user %}
     <div class="navbar-collapse collapse order-3 dual-collapse2" id="navbarNavDropdown">
       <ul class="navbar-nav ms-auto">
     {% if user.is_authenticated %}
@@ -34,5 +35,6 @@
         {% endif %}
       </ul>
     </div>
+    {% endif %}
   </div>
 </nav>

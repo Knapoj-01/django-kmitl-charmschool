@@ -46,7 +46,12 @@ class AddClassWorkForm(forms.ModelForm):
             'message': 'ข้อความ',
             'work': 'ไฟล์งานที่จะส่ง'
         }
-
+    def save(self, request, assignment_pk):
+        model =  super().save(commit=False)
+        model.student = request.user.student
+        model.assignment = Assignment.objects.get(pk=assignment_pk)
+        model.save()
+        return model
 
 class AddAssignmentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
