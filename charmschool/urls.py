@@ -12,4 +12,8 @@ urlpatterns = [
     path('group/<int:group_pk>/members/', GroupMembersView.as_view(extra_context={'title_name': 'สมาชิกในกลุ่มเรียน'}), name='members'),
     path('group/<int:group_pk>/content/<int:content_pk>/', ContentView.as_view(extra_context={'title_name': 'เนื้อหา'}), name='content'),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/', AssignmentView.as_view(extra_context={'title_name': 'การบ้าน'}), name='assignment'),
+    path('group/<int:group_pk>/content/<int:content_pk>/editcontent/',EditContentView.as_view()),
+    path('group/<int:group_pk>/assignment/<int:assignment_pk>/editcontent/', EditContentView.as_view()),
+    path('group/<int:group_pk>/content/<int:content_pk>/deletecontent/', DeleteContentView.as_view()),
+    path('group/<int:group_pk>/assignment/<int:assignment_pk>/deletecontent/', DeleteContentView.as_view()),
 ]

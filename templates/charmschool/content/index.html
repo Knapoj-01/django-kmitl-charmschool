@@ -18,6 +18,13 @@
     </small>
     <hr />
     {{content.content}}
+    {% if is_instructor %}
+        <div class="my-3">
+            {% with editcontentform as form %}
+                {% include "components/edit_delete_content.html" %}
+            {% endwith %}
+        </div>
+    {% endif %}
     <h4 class='my-3'>ความคิดเห็น</h4>
     {% for comment in comments %}
     <div class="commented-section mt-2 p-3" style='background-color: lemonchiffon'>

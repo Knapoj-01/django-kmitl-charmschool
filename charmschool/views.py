@@ -1,6 +1,8 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, ListView
+from django.utils.timezone import localtime
 from django.contrib.auth.mixins import LoginRequiredMixin
+from copy import deepcopy
 from .models import *
 from .forms import *
 from .mixins import *
@@ -55,6 +57,11 @@ class ContentView(GetInfoMixin, LoginRequiredMixin, TemplateView):
         context["content"] = content
         context["comments"] = Course_Comment.objects.filter(subject__id = content_pk)
         context['form'] = AddCommentForm
+        if self.request.user.is_instructor():
+            context['editcontentform'] = AddContentForm(
+                instance = content,
+                user_groups_queryset= self.request.user.groups.all()
+                )
         check_group_visiblilty(content, self.request.user)
         return context
     def post(self, request,content_pk,*args, **kwargs):
@@ -69,9 +76,15 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
     template_name = 'charmschool/assignment/index.html'
     def get_context_data(self,group_pk, assignment_pk, **kwargs):
         context = super().get_context_data(group_pk,**kwargs)
-        context["assignment"] = Assignment.objects.get(pk = assignment_pk)
-        context['form'] = AddClassWorkForm
+        assignment = get_object_or_404(Assignment, pk = assignment_pk)
+        context["assignment"] = assignment
         if self.request.user.is_instructor():
+            assignment_form = deepcopy(assignment)
+            assignment_form.due_date = localtime(assignment_form.due_date).strftime("%Y-%m-%dT%H:%M")
+            form =  AddAssignmentForm(
+                instance = assignment_form, user_groups_queryset= self.request.user.groups.all()
+                )
+            context['form'] = form
             return_list = []
             return_classwork = []
             student_list = Student.objects.filter(
@@ -86,11 +99,13 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
                     else: return_list.append([obj])
             context['classwork_list'] = return_classwork+return_list
         else:
+            context['form'] = AddClassWorkForm
             classwork_queryset = Classwork.objects.filter(
             assignment__id = assignment_pk, student = self.request.user.student
             )
             if classwork_queryset: context['classwork'] = classwork_queryset[0]
         return context
+
     def post(self,request,group_pk, assignment_pk,*args, **kwargs):
         form = AddClassWorkForm(request.POST, request.FILES)
         if form.is_valid():

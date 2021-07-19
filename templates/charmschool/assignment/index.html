@@ -46,9 +46,12 @@
     {% endif %}
     {% endif %}
     {% else %}
-    <h4 class='mt-4'>สถานะการส่งการบ้าน</h4>
-    {% include "components/hw_instructor_list.html" %}
-    {% endif %}
+    <div class="my-3">
+        {% include "components/edit_delete_content.html" %}
+        <h4 class='mt-4'>สถานะการส่งการบ้าน</h4>
+        {% include "components/hw_instructor_list.html" %}
+        {% endif %}
+    </div>
 </div>
 
 {% endblock course_content %}
