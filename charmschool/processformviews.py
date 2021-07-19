@@ -32,8 +32,8 @@ class EditContentView(LoginRequiredMixin, View):
         else: return redirect('../')
         if form.is_valid():
             model = form.save(commit=False)
-            model.author = request.user.instructor
             model.save()
+            model.visible_by.set(request.POST.getlist('visible_by'))
         return redirect('../')
 
 class DeleteContentView(LoginRequiredMixin,View):
