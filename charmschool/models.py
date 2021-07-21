@@ -80,7 +80,7 @@ class Classwork(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     message = models.CharField(max_length=500, null=True)
     submit_date = models.DateTimeField(default=timezone.now)
-    work = models.FileField(upload_to='KMITL-CharmWeb/classwork/{}'.format(str(assignment)), storage=gd_storage, null=True, blank=True)
+    work = models.FileField(upload_to='KMITL-CharmWeb/classwork/{}'.format(str(assignment.name)), storage=gd_storage, null=True, blank=True)
     score = models.IntegerField(null=True,blank=True)
     graded = models.BooleanField(default=False)
 
