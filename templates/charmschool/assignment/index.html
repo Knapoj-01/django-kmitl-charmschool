@@ -38,7 +38,7 @@
         </form>
     </div>
     {% else %}
-    {{classwork.message|safe}}
+    {{classwork.message}}
     {% if classwork.work %}
     <h5 class='mt-3'>ไฟล์แนบ</h5>
     {{classwork.work}} <a href="https://docs.google.com/viewer?url={{classwork.work.url}}" target="_blank" rel="noopener noreferrer">เปิดในแท็บใหม่</a>  
