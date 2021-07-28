@@ -94,27 +94,21 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
                 if obj.classwork_set:
                     classwork = obj.classwork_set.filter(assignment__id = assignment_pk)
                     if classwork:
-                        element = [obj , classwork[0]]
+                        element = [obj , classwork_queryset_deserial(classwork)[0]]
                         return_classwork.append(element)
                     else: return_list.append([obj])
-            context['classwork_list'] = return_classwork+return_list
+            context['classwork_list'] = return_classwork + return_list
         else:
             context['form'] = AddClassWorkForm
             classwork_queryset = Classwork.objects.filter(
             assignment__id = assignment_pk, student = self.request.user.student
             )
-            if classwork_queryset: context['classwork'] = classwork_queryset[0]
+            if classwork_queryset: 
+                classwork = classwork_queryset_deserial(classwork_queryset)[0]
+                print(classwork)
+                context['classwork'] = classwork
         return context
 
-    def post(self,request,group_pk, assignment_pk,*args, **kwargs):
-        form = AddClassWorkForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save(request, assignment_pk)
-        elif 'score' in request.POST.keys():
-            classwork = Classwork.objects.get(pk = request.POST.get('classwork_id'))
-            classwork.score = request.POST.get('score')
-            classwork.save()
-        return redirect(self.request.path_info)
 
 class GroupMembersView(GetInfoMixin,LoginRequiredMixin,ListView):
     template_name = 'charmschool/group/members.html'

@@ -2,12 +2,14 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import  Group
 from django.utils import timezone
+
 from gdstorage.storage import GoogleDriveStorage
 gd_storage = GoogleDriveStorage()
 import os
 def get_upload_path(instance, filename):
     return os.path.join(
       "KMITL-CharmWeb/classwork/%s" % instance.assignment.subject, filename)
+
 
 gender_choices = [
     ('นาย', 'นาย'),
@@ -84,7 +86,7 @@ class Classwork(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     message = models.CharField(max_length=500, null=True)
     submit_date = models.DateTimeField(default=timezone.now)
-    work = models.FileField(upload_to= get_upload_path, storage=gd_storage, null=True, blank=True)
+    works = models.JSONField(null =True, blank=True)
     score = models.IntegerField(null=True,blank=True)
     graded = models.BooleanField(default=False)
 

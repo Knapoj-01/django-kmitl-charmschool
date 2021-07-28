@@ -17,6 +17,6 @@ class GetInfoMixin:
         context['is_instructor'] = self.request.user.is_instructor()
         context['is_student'] = self.request.user.is_student()
         context["groupdata"] = groupdata
-        context['instructors'] = groupdata.group.user_set.filter(instructor__id__isnull=False)
+        context['instructors'] = groupdata.group.user_set.filter(instructor__id__isnull=False).order_by('-instructor__type')
         check_access_permission(groupdata.group,self.request.user)
         return context

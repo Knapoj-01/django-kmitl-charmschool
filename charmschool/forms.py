@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import widgets
 from .models import *
+import json
 defaultattr = {'class':'form-control'}
 class AddGroupDataForm(forms.ModelForm):
     class Meta:
@@ -37,19 +38,20 @@ class AddCommentForm(forms.ModelForm):
 class AddClassWorkForm(forms.ModelForm):
     class Meta:
         model = Classwork
-        fields = ['message','work']
+        fields = ['message','works']
         widgets = {
             'message': forms.Textarea(attrs={'rows': 3, 'class':'form-control'}),
-            'work': forms.FileInput(attrs={'accept':'.pdf,.jpg,.jpeg'})
+            'works': forms.ClearableFileInput(attrs={'accept':'.pdf,.jpg,.jpeg','multiple': True})
         }
         labels= {
             'message': 'ข้อความ',
-            'work': 'ไฟล์งานที่จะส่ง'
+            'works': 'ไฟล์งานที่จะส่ง'
         }
-    def save(self, request, assignment_pk):
+    def save(self, request, assignment_pk, classwork_id_list = None):
         model =  super().save(commit=False)
         model.student = request.user.student
         model.assignment = Assignment.objects.get(pk=assignment_pk)
+        if classwork_id_list: model.works = json.dumps(classwork_id_list)
         model.save()
         return model
 

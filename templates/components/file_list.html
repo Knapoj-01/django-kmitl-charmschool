@@ -1,0 +1,7 @@
+{% for work in works %}
+{% if forloop.counter != 1 %}<br>{% endif %}
+{{work.name}}:
+    <a href="https://drive.google.com/file/d/{{work.id}}/view" target="_blank" rel="noopener noreferrer">เปิดในแท็บใหม่</a>  
+    <a href="https://drive.google.com/uc?export=download&id={{work.id}}">ดาวน์โหลด</a> 
+{% endfor %}
+

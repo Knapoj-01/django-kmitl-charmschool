@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.shortcuts import redirect
 from .forms import *
+from .googleapiutils import *
 
 class AddContentView(LoginRequiredMixin, View):
     def post(self,request,*args, **kwargs):
@@ -44,3 +45,31 @@ class DeleteContentView(LoginRequiredMixin,View):
             Course_Content.objects.get(pk = kwargs.get('content_pk')).delete()
         else: return redirect('classroom', group_pk=kwargs.get('group_pk'))
         return redirect('classroom', group_pk=kwargs.get('group_pk'))
+
+class SubmitClassworkView(LoginRequiredMixin,View):
+    def post(self,request,group_pk, assignment_pk,*args, **kwargs):
+        form = AddClassWorkForm(request.POST)
+        if form.is_valid():
+            id_list = None
+            if request.FILES:
+                service = token_authentication(request)
+                charmschool = create_folder_if_not_exists(service, 'Charmschool')
+                assignments_folder = create_folder_if_not_exists(
+                    service, 'assignments', charmschool.get('id')
+                    )
+                folder = create_folder_if_not_exists(
+                    service, str(assignment_pk), assignments_folder.get('id')
+                    )
+                files = request.FILES.getlist('works')
+                id_list = upload_user_contents(service,files, request, folder.get('id'))
+                print(request.FILES, id_list)
+            form.save(request, assignment_pk, id_list)
+        return redirect('../')
+
+class GradeClassworkView(LoginRequiredMixin,View):
+    def post(self,request,group_pk, assignment_pk,*args, **kwargs):
+        if 'score' in request.POST.keys():
+            classwork = Classwork.objects.get(pk = request.POST.get('classwork_id'))
+            classwork.score = request.POST.get('score')
+            classwork.save()
+        return redirect('../')

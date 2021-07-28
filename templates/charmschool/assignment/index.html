@@ -29,9 +29,13 @@
         เพิ่มงาน
     </button>
     <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="submit/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% include "components/form_base.html" %}
+            <small>
+            <p><b>หมายเหตุ:</b> นักศึกษาสามารถเพิ่มงานได้เพียงครั้งเดียวเท่านั้น เมื่อกดบันทึกข้อมูลแล้ว 
+            จะไม่สามารถแก้ไขข้อความและไฟล์ที่ส่งได้อีก โปรดตรวจสอบข้อมูลของท่านให้ละเอียด</p>
+            </small>
             <div class="d-sm-flex flex-sm-row-reverse">
                 <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
             </div>
@@ -39,10 +43,17 @@
     </div>
     {% else %}
     {{classwork.message}}
-    {% if classwork.work %}
+    {% if classwork.works %}
     <h5 class='mt-3'>ไฟล์แนบ</h5>
-    {{classwork.work}} <a href="https://docs.google.com/viewer?url={{classwork.work.url}}" target="_blank" rel="noopener noreferrer">เปิดในแท็บใหม่</a>  
-    <a href="{{classwork.work.url}}">ดาวน์โหลด</a> 
+    {% with classwork.works as works %}
+        {% include "components/file_list.html" %}
+    {% endwith %}
+    <div class="mt-2">
+        <small>
+            <p><b>หมายเหตุ:</b> ท่านไม่สามารถแก้ไขข้อมูลที่ส่งได้ด้วยตนเอง 
+            หากต้องการรีเซตการส่งงาน โปรดติดต่อผู้ดูแลระบบ</p>
+        </small>
+    </div>
     {% endif %}
     {% endif %}
     {% else %}

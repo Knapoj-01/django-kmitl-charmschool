@@ -20,10 +20,12 @@
                 {% with student.1 as classwork %}
                     {% if classwork %}
                     {{classwork.message}}
-                    {% if classwork.work %}
+                    {% if classwork.works %}
                     <br/>
-                    <b>ไฟล์แนบ:</b> {{classwork.work}} <br/><a href="https://docs.google.com/viewer?url={{classwork.work.url}}" target="_blank" rel="noopener noreferrer">เปิดในแท็บใหม่</a>  
-                    <a href="{{classwork.work.url}}">ดาวน์โหลด</a> 
+                    <b>ไฟล์แนบ:</b> <br>
+                    {% with classwork.works as works %}
+                        {% include "components/file_list.html" %} 
+                    {% endwith %}
                     {% endif %}
                     {% else %}
                     -
@@ -32,7 +34,7 @@
             </td>
             <td>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }} {{classwork.submit_date|time:"H:i" }} น. {% else %} -{% endif %}</td>
             <td>{% if classwork %}
-                <form action="" method="post">
+                <form action="grade/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="classwork_id" value = "{{classwork.pk}}">
                         <input type="number" class="form-control form-control-sm" name="score" 
