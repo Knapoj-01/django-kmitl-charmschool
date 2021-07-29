@@ -48,7 +48,7 @@
             <p>ยังไม่มีเนื้อหา</p>
             {% endfor %}
         </div>
-        <div class="d-sm-flex flex-sm-row-reverse mt-2 me-3">
+        <div class="d-flex flex-row-reverse mt-2 me-3">
             {% if user.is_instructor %}<a href='contentlist/?private=True' class="btn btn-secondary ms-2"> ดูเนื้อหาที่ไม่เป็นสาธารณะ</a>{% endif %}
             <a href='contentlist/' class="btn btn-info"> ดูทั้งหมด</a>
         </div>

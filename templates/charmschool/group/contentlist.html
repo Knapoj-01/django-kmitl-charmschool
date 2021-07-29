@@ -1,32 +1,38 @@
 {% extends "charmschool/base.html" %}
 {% block course_content %}
 <div class="m-3 group table-responsive">
-<h4 class='mt-2'>เนื้อหา/ข่าวประกาศ</h4>
-{% if not request.GET.private %}
-{% include "components/search_form.html" %}
-{% endif %}
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">เนื้อหา</th>
-            <th scope="col">โพสต์โดย</th>
-            <th scope="col" class='text-center'>โพสต์เมื่อ</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for content in contents %}
-        <tr  class="clickable "  onclick='window.location="../content/{{content.pk}}"' style='cursor:pointer;'>
-            <th scope="row">{{forloop.counter}}</th>
-            <td>{% if content.private %}<i class="bi bi-file-lock-fill"></i>{% endif %} {{content.subject}}</td>
-            <td>{{content.author.name}} {{content.author.surname}}</td>
-            <td class='text-center'>
-            {{content.pub_date|date:'d/m/Y'}} {{content.pub_date|time:'H:i'}} น.
-            </td>
-        </tr>
-        {% endfor %}
-        </tr>
-    </tbody>
-</table>
+    <div class='d-flex justify-content-between my-3'>
+        <h4 class='mb-2'>เนื้อหา/ข่าวประกาศ</h4>
+        {% if not request.GET.private %}
+        {% include "components/search_form.html" %}
+        {% endif %}
+    </div>
+    {% if contents %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">เนื้อหา</th>
+                <th scope="col">โพสต์โดย</th>
+                <th scope="col" class='text-center'>โพสต์เมื่อ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for content in contents %}
+            <tr class="clickable " onclick='window.location="../content/{{content.pk}}"' style='cursor:pointer;'>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{% if content.private %}<i class="bi bi-file-lock-fill"></i>{% endif %} {{content.subject}}</td>
+                <td>{{content.author.name}} {{content.author.surname}}</td>
+                <td class='text-center'>
+                    {{content.pub_date|date:'d/m/Y'}} {{content.pub_date|time:'H:i'}} น.
+                </td>
+            </tr>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% else %}
+    <span>ไม่มีรายการ</span> <br>
+    {% endif %}
 </div>
 {% endblock course_content %}
