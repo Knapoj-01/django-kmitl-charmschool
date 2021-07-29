@@ -1,0 +1,39 @@
+{% extends "charmschool/base.html" %}
+{% block course_content %}
+<div class="m-3 group table-responsive">
+<h4 class='mt-2'>เนื้อหา/ข่าวประกาศ</h4>
+<div class="d-sm-flex flex-sm-row-reverse form-group">
+    <form action="" method="get" name='search'>
+    <div class="input-group">
+    <input type="text" name='q' class="form-control" value='{{request.GET.q}}' placeholder='ค้นหาตามหัวข้อ'/>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+    </form>
+</div>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">เนื้อหา</th>
+            <th scope="col">โพสต์โดย</th>
+            <th scope="col" class='text-center'>โพสต์เมื่อ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for content in contents %}
+        <tr  class="clickable "  onclick='window.location="../content/{{content.pk}}"' style='cursor:pointer;'>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{content.subject}}</td>
+            <td>{{content.author.name}} {{content.author.surname}}</td>
+            <td class='text-center'>
+            {{content.pub_date|date:'d/m/Y'}} {{content.pub_date|time:'H:i'}} น.
+            </td>
+        </tr>
+        {% endfor %}
+        </tr>
+    </tbody>
+</table>
+</div>
+{% endblock course_content %}

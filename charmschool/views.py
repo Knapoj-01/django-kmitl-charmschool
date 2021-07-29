@@ -1,3 +1,4 @@
+from django.http import request
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.utils.timezone import localtime
@@ -46,9 +47,23 @@ class ClassroomView(GetInfoMixin, LoginRequiredMixin, TemplateView):
                 ).order_by('due_date','pub_date')
             context['assignment_form'] = AddAssignmentForm(user_groups_queryset= self.request.user.groups.all())
             context['content_form'] = AddContentForm(user_groups_queryset= self.request.user.groups.all())
-        context['course_contents'] = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('-pub_date')
+        context['course_contents'] = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('-pub_date')[:3]
         return context
     
+class ContentListView(GetInfoMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'charmschool/group/contentlist.html'
+    def get_context_data(self,group_pk,**kwargs):
+        context = super().get_context_data(group_pk, **kwargs)
+        content_all = Course_Content.objects.filter(visible_by__id__exact=group_pk).order_by('-pub_date')
+        if 'q' in self.request.GET.keys():
+            contents = content_all.filter(subject__contains = self.request.GET.get('q'))
+        else:
+            contents = content_all
+        context["contents"] = contents
+        return context
+    
+    pass 
+
 class ContentView(GetInfoMixin, LoginRequiredMixin, TemplateView):
     template_name = 'charmschool/content/index.html'
     def get_context_data(self,group_pk,content_pk, **kwargs):
