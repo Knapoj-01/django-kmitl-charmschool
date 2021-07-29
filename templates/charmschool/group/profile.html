@@ -1,26 +1,33 @@
-<div class="card-body table-responsive">
-    {% if classwork_list %}
-    <table class="table table-hover">
+{% extends "charmschool/base.html" %}
+{% block course_content %}
+<div class="m-3 group table-responsive">
+<h4>ข้อมูลนักศึกษา</h4>
+ีี<ul>
+    <li>ชื่อ: {{member.gender}} {{member.name}} {{member.surname}} </li>
+    <li>รหัสนักศึกษา: {{member.student_id}} </li>
+    <li>อีเมล: {{member.email_ref}}</li>
+</ul>
+{% if request.user.is_instructor %}
+{% include "components/search_form.html" %}
+<table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">รหัสนักศึกษา</th>
+                <th scope="col">การบ้าน</th>
                 <th scope="col">งานที่ส่ง</th>
                 <th scope="col">วันที่ส่ง</th>
                 <th scope="col">คะแนน</th>
             </tr>
         </thead>
         <tbody>
-            {% for student in classwork_list %}
+            {% for classwork in classworks %}
             <tr>
-                <form action="grade/" method="post">
+                <form action="../../assignment/{{classwork.assignment.pk}}/grade/" method="post">
                     {% csrf_token %}
                     <th scope="row">{{forloop.counter}}</th>
-                    <td>{{student.0.student_id}}</td>
+                    <td><a href="../../assignment/{{classwork.assignment.pk}}/">{{classwork.assignment.subject}}</a></td>
                     <td>
                         <small>
-                            {% with student.1 as classwork %}
-                            {% if classwork %}
                             {{classwork.message}}
                             {% if classwork.works %}
                             <br />
@@ -29,16 +36,13 @@
                             {% include "components/file_list.html" %}
                             {% endwith %}<br>
                             <b>ความคิดเห็น:</b> <br>
+                            <input type="hidden" name="success_url" value="{{request.get_full_path}}">
                             <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
-                            <input type="hidden" name="success_url" value="{{request.path}}">
                             <input type="text" name="feedback" class="form-control form-control-sm" {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
-                            {% endif %}
-                            {% else %}
-                            -
                             {% endif %}
                         </small>
                     </td>
-                    <td>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}
+                    <td style='max-width:95px;'>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}
                         {{classwork.submit_date|time:"H:i" }} น. {% else %} -{% endif %}</td>
                     <td style='min-width: 80px; vertical-align: bottom'>{% if classwork %}
                         <input type="number" class="form-control-sm p-0" name="score" min="0"
@@ -53,12 +57,11 @@
                         {% endif %}
                     </td>
                 </form>
-                {% endwith %}
             </tr>
             {% endfor %}
             </tr>
         </tbody>
     </table>
-    {% else %}
-    <span>ไม่มีรายการ</span>
-    {% endif %}
+{% endif %}
+</div>
+{% endblock course_content %}

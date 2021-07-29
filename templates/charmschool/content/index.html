@@ -51,7 +51,7 @@
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="comment_pk" value='{{comment.pk}}'>
-                <input type="submit" name='delete' class="btn btn-primary btn-sm" value='ลบความคิดเห็นนี้'>
+                <input type="submit" name='delete' class="btn btn-danger btn-sm" value='ลบ'>
             </form>
         </div>
         {% endif %}

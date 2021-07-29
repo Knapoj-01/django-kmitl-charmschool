@@ -74,4 +74,4 @@ class GradeClassworkView(LoginRequiredMixin,View):
             classwork.feedback = request.POST.get('feedback')
             classwork.graded = True
             classwork.save()
-        return redirect('../')
+        return redirect(request.POST.get('success_url'))
