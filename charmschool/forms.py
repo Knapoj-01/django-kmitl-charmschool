@@ -97,11 +97,13 @@ class AddContentForm(forms.ModelForm):
             'subject': forms.TextInput(attrs=defaultattr),
             'content': forms.Textarea(attrs={'rows': 10, 'class':'form-control'}),
             'description': forms.Textarea(attrs={'rows': 3, 'class':'form-control'}),
+            'private' : forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
         labels = {
             'subject': 'หัวข้อเนื้อหา',
             'description': 'คำอธิบายเนื้อหา',
             'content': 'เนื้อหา',
+            'private' : 'จำกัดสิทธิ์การเข้าถึง (เห็นได้เฉพาะผู้สอน)'
         }
     field_order = ['subject','description', 'visible_by', 'content', 'max_score']
     visible_by = forms.ModelMultipleChoiceField(

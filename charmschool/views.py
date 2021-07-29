@@ -1,4 +1,3 @@
-from django.http import request
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.utils.timezone import localtime
@@ -34,6 +33,7 @@ class ClassroomView(GetInfoMixin, LoginRequiredMixin, TemplateView):
     def get_context_data(self, group_pk, **kwargs):
         context = super().get_context_data(group_pk,**kwargs)
         group = GroupData.objects.get(pk=group_pk)
+        content_all = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('-pub_date')
         if self.request.user.is_student():
             context['classworks'] = Classwork.objects.filter(student=self.request.user.student)
             context['assignments'] = Assignment.objects.filter(
@@ -41,13 +41,14 @@ class ClassroomView(GetInfoMixin, LoginRequiredMixin, TemplateView):
                 ).exclude(
                     classwork__in= Classwork.objects.filter(student=self.request.user.student)
                     ).order_by('due_date','pub_date')
+            context['course_contents'] = content_all.exclude(private = True)[:3]
         else:
             context['assignments'] = Assignment.objects.filter(
                 visible_by__id__exact=group.pk
                 ).order_by('due_date','pub_date')
             context['assignment_form'] = AddAssignmentForm(user_groups_queryset= self.request.user.groups.all())
             context['content_form'] = AddContentForm(user_groups_queryset= self.request.user.groups.all())
-        context['course_contents'] = Course_Content.objects.filter(visible_by__id__exact=group.pk).order_by('-pub_date')[:3]
+            context['course_contents'] = content_all[:3]
         return context
     
 class ContentListView(GetInfoMixin, LoginRequiredMixin, TemplateView):
@@ -68,7 +69,9 @@ class ContentView(GetInfoMixin, LoginRequiredMixin, TemplateView):
     template_name = 'charmschool/content/index.html'
     def get_context_data(self,group_pk,content_pk, **kwargs):
         context = super().get_context_data(group_pk,**kwargs)
-        content = get_object_or_404(Course_Content, pk = content_pk)      
+        content = get_object_or_404(Course_Content, pk = content_pk)  
+        if self.request.user.is_student() and content.private == True:
+            raise PermissionDenied
         context["content"] = content
         context["comments"] = Course_Comment.objects.filter(subject__id = content_pk)
         context['form'] = AddCommentForm

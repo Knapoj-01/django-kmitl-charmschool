@@ -32,12 +32,15 @@
         {% else %}
         <span>ไม่มีรายการ</span><br/>
         {% endif %}
-            <button class="btn btn-success mt-3" data-bs-toggle="collapse" href="#AddAssignmentForm" role="button"
+    </div>
+    <div class="d-sm-flex flex-sm-row-reverse">
+        <button class="btn btn-success mb-3 me-3" data-bs-toggle="collapse" href="#AddAssignmentForm" role="button"
         aria-expanded="false" aria-controls="AddAssignmentForm">
         <i class="bi bi-plus"></i>
         เพิ่มการบ้าน
         </button>
-        <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddAssignmentForm">
+    </div>
+    <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddAssignmentForm">
             <form action="addcontent/" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="assignment">
@@ -49,5 +52,4 @@
                 </div>
             </form>
         </div>
-    </div>
 </div>

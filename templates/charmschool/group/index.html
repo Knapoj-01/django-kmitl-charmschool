@@ -12,11 +12,31 @@
     </div>
     <div class="group-content m-3 ">
         <h4 class='mb-3'>เนื้อหา/ข่าวประกาศ</h4>
+        {% if not is_student %}
+            <button class="btn btn-success mb-2" data-bs-toggle="collapse" href="#AddContentForm" role="button"
+                aria-expanded="false" aria-controls="AddContentForm">
+                <i class="bi bi-plus"></i>
+                เพิ่มเนื้อหา
+            </button>
+        <div class="collapse mb-2 p-3" style='background-color: rgb(255,239,213); border-radius 5px;'
+            id="AddContentForm">
+            <form action="addcontent/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="content">
+                {% with content_form as form %}
+                {% include "components/form_base.html" %}
+                {% endwith %}
+                <div class="d-sm-flex flex-sm-row-reverse">
+                    <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
         <div class="list-group">
             {% for content in course_contents %}
             <a href="content/{{content.pk}}/" class="list-group-item list-group-item-action" aria-current="true">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mt-1">{{content.subject}}</h5>
+                    <h5 class="mt-1">{% if content.private %}<i class="bi bi-file-lock-fill"></i>{% endif %} {{content.subject}}</h5>
                 </div>
                 <p class="mb-1">{{content.description}}</p>
                 <small>
@@ -31,25 +51,7 @@
         <div class="d-sm-flex flex-sm-row-reverse mt-2 me-3">
             <a href='contentlist/' class="btn btn-info"> ดูทั้งหมด</a>
         </div>
-        {% if not is_student %}
-             <button class="btn btn-success mt-3" data-bs-toggle="collapse" href="#AddContentForm" role="button"
-        aria-expanded="false" aria-controls="AddContentForm">
-        <i class="bi bi-plus"></i>
-        เพิ่มเนื้อหา
-        </button>
-        <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddContentForm">
-            <form action="addcontent/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="content">
-                {% with content_form as form %}
-                {% include "components/form_base.html" %}
-                {% endwith %}
-                <div class="d-sm-flex flex-sm-row-reverse">
-                    <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
-                </div>
-            </form>
-        </div>
-        {% endif %}
+
     </div>
 </div>
 {% endblock course_content %}

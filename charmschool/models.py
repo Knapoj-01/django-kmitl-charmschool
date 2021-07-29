@@ -64,6 +64,7 @@ class Content_Base(models.Model):
 
 class Course_Content(Content_Base):
     description = models.CharField(max_length=256, null=True)
+    private = models.BooleanField(default=False)
     class Meta:
         verbose_name = 'Course Content'
         verbose_name_plural = 'Course Contents'

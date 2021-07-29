@@ -2,7 +2,7 @@
 {% load static %}
 {% block course_content %}
 <div class="m-3">
-    <h4>{{content.subject}}</h4>
+    <h4>{% if content.private %}<i class="bi bi-file-lock-fill"></i>{% endif %} {{content.subject}}</h4>
     <span class="snippets">{{content.description}}</span><br />
     <small>
         <b>โพสต์โดย:</b> {{content.author.name}} {{content.author.surname}}
