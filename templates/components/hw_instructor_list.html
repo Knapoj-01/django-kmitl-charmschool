@@ -1,58 +1,63 @@
 <div class="card-body table-responsive">
-{% if classwork_list %}
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">รหัสนักศึกษา</th>
-            <th scope="col">งานที่ส่ง</th>
-            <th scope="col">วันที่ส่ง</th>
-            <th scope="col">คะแนน</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in classwork_list %}
-        <tr>
-            <th scope="row">{{forloop.counter}}</th>
-            <td>{{student.0.student_id}}</td>
-            <td>
-                <small>
-                {% with student.1 as classwork %}
-                    {% if classwork %}
-                    {{classwork.message}}
-                    {% if classwork.works %}
-                    <br/>
-                    <b>ไฟล์แนบ:</b> <br>
-                    {% with classwork.works as works %}
-                        {% include "components/file_list.html" %} 
-                    {% endwith %}
-                    {% endif %}
-                    {% else %}
-                    -
-                    {% endif %}
-                </small>
-            </td>
-            <td>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }} {{classwork.submit_date|time:"H:i" }} น. {% else %} -{% endif %}</td>
-            <td>{% if classwork %}
+    {% if classwork_list %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">รหัสนักศึกษา</th>
+                <th scope="col">งานที่ส่ง</th>
+                <th scope="col">วันที่ส่ง</th>
+                <th scope="col">คะแนน</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in classwork_list %}
+            <tr>
                 <form action="grade/" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="classwork_id" value = "{{classwork.pk}}">
-                        <input type="number" class="form-control form-control-sm" name="score" 
-                            min="0" max="{{classwork.assignment.max_score}}" style='width:3.15rem;' value = {{classwork.score}}>
-                {% if classwork.score %}
-                    <button class="btn btn-warning btn-sm p-0 px-1 ms-4" type="submit"><i class="bi bi-pencil-square"></i></button>
-                {% else %}
-                    <button class="btn btn-success btn-sm p-0 px-1 ms-4" type="submit" ><i class="bi bi-plus"></i></button>
-                {% endif %}
-                {% endif %}
-                 </form>
-            </td>
-            {% endwith %}
-        </tr>
-        {% endfor %}
-        </tr>
-    </tbody>
-</table>
-{% else %}
-<span>ไม่มีรายการ</span>
-{% endif %}
+                    {% csrf_token %}
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{student.0.student_id}}</td>
+                    <td>
+                        <small>
+                            {% with student.1 as classwork %}
+                            {% if classwork %}
+                            {{classwork.message}}
+                            {% if classwork.works %}
+                            <br />
+                            <b>ไฟล์แนบ:</b> <br>
+                            {% with classwork.works as works %}
+                            {% include "components/file_list.html" %}
+                            {% endwith %}<br>
+                            <b>ความคิดเห็น:</b> <br>
+                            <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
+                            <input type="text" name="feedback" class="form-control form-control-sm" {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
+                            {% endif %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </small>
+                    </td>
+                    <td>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}
+                        {{classwork.submit_date|time:"H:i" }} น. {% else %} -{% endif %}</td>
+                    <td style='min-width: 80px; vertical-align: bottom'>{% if classwork %}
+                        <input type="number" class="form-control-sm p-0" name="score" min="0"
+                            max="{{classwork.assignment.max_score}}" style='width:2.15rem;' value={{classwork.score}}>
+                        {% if classwork.score %}
+                        <button class="btn btn-warning btn-sm p-0 ms-1" type="submit"><i
+                                class="bi bi-pencil-square"></i></button>
+                        {% else %}
+                        <button class="btn btn-success btn-sm p-0 ms-1" type="submit"><i
+                                class="bi bi-plus"></i></button>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </form>
+                {% endwith %}
+            </tr>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% else %}
+    <span>ไม่มีรายการ</span>
+    {% endif %}

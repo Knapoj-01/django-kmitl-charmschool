@@ -71,5 +71,7 @@ class GradeClassworkView(LoginRequiredMixin,View):
         if 'score' in request.POST.keys():
             classwork = Classwork.objects.get(pk = request.POST.get('classwork_id'))
             classwork.score = request.POST.get('score')
+            classwork.feedback = request.POST.get('feedback')
+            classwork.graded = True
             classwork.save()
         return redirect('../')
