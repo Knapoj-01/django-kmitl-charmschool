@@ -14,6 +14,7 @@ def check_access_permission(group,user):
 
 def classwork_queryset_deserial(queryset):
     for entry in queryset:
-        entry.works = json.loads(entry.works)
+        if entry.works != None:
+            entry.works = json.loads(entry.works)
     return queryset
 
