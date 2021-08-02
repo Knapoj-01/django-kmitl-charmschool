@@ -5,6 +5,7 @@ from django.views.generic import View
 from django.shortcuts import redirect
 from .forms import *
 from .googleapiutils import *
+from .models import Classwork
 
 class AddContentView(LoginRequiredMixin, View):
     def post(self,request,*args, **kwargs):
@@ -48,7 +49,15 @@ class DeleteContentView(LoginRequiredMixin,View):
 
 class SubmitClassworkView(LoginRequiredMixin,View):
     def post(self,request,group_pk, assignment_pk,*args, **kwargs):
-        form = AddClassWorkForm(request.POST)
+        classwork = Classwork.objects.filter(
+            student = request.user.student,
+            assignment__id = assignment_pk
+            )
+        if classwork:
+            instance = classwork[0]
+            form = AddClassWorkForm(request.POST, instance=instance)
+        else : 
+            form = AddClassWorkForm(request.POST)
         if form.is_valid():
             id_list = None
             if request.FILES:
@@ -62,7 +71,6 @@ class SubmitClassworkView(LoginRequiredMixin,View):
                     )
                 files = request.FILES.getlist('works')
                 id_list = upload_user_contents(service,files, request, folder.get('id'))
-                print(request.FILES, id_list)
             form.save(request, assignment_pk, id_list)
         return redirect('../')
 
