@@ -1,8 +1,10 @@
+from django.core import paginator
 from django.http import request
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.utils.timezone import localtime
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from copy import deepcopy
 from .models import *
 from .forms import *
@@ -118,7 +120,16 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
                         element = [obj , classwork_queryset_deserial(classwork)[0]]
                         return_classwork.append(element)
                     else: return_list.append([obj])
-            context['classwork_list'] = return_classwork + return_list
+            paginator = Paginator(return_classwork + return_list, 10)
+            # Paginator Settings
+            page = self.request.GET.get('page', 1)
+            try:
+                clist = paginator.page(page)
+            except PageNotAnInteger:
+                clist = paginator.page(1)
+            except EmptyPage:
+                clist = paginator.page(paginator.num_pages)
+            context['classwork_list'] = clist
         else:
             context['form'] = AddClassWorkForm
             classwork_queryset = Classwork.objects.filter(

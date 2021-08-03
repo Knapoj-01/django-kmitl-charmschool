@@ -1,0 +1,23 @@
+{% if data.has_other_pages %}
+<nav>
+  <ul class="pagination">
+    {% if data.has_previous %}
+      <li class="page-item"><a href="?page={{ data.previous_page_number }}" class="page-link">&laquo;</a></li>
+    {% else %}
+      <li class="page-item disable"><a href ='#' class="page-link ">&laquo;</a></li>
+    {% endif %}
+    {% for i in data.paginator.page_range %}
+      {% if data.number == i %}
+        <li class="page-item active"><a href="#" class="page-link "> {{ i }} (หน้าปัจจุบัน)</a></li>
+      {% else %}
+        <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if data.has_next %}
+      <li class="page-item "><a href="?page={{ data.next_page_number }}" class="page-link">&raquo;</a></li>
+    {% else %}
+      <li class="page-item disable"><a href='#' class="page-link ">&raquo;</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}

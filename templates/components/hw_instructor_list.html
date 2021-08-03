@@ -15,7 +15,7 @@
             <tr>
                 <form action="grade/" method="post">
                     {% csrf_token %}
-                    <th scope="row">{{forloop.counter}}</th>
+                    <th scope="row">{{forloop.counter0|add:classwork_list.start_index}}</th>
                     <td>{{student.0.student_id}}</td>
                     <td>
                         <small>
@@ -62,3 +62,6 @@
     {% else %}
     <span>ไม่มีรายการ</span>
     {% endif %}
+{% with classwork_list as data %}
+    {% include "components/paginator.html" %}
+{% endwith %} 
