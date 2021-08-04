@@ -30,7 +30,7 @@
                             {% endwith %}<br>
                             <b>ความคิดเห็น:</b> <br>
                             <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
-                            <input type="hidden" name="success_url" value="{{request.path}}">
+                            <input type="hidden" name="success_url" value="{{request.get_full_path}}">
                             <input type="text" name="feedback" class="form-control form-control-sm" {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
                             {% endif %}
                             {% else %}
