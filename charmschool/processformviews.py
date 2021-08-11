@@ -70,7 +70,8 @@ class SubmitClassworkView(LoginRequiredMixin,View):
                     )
                 files = request.FILES.getlist('works')
                 id_list = upload_user_contents(service,files, request, folder.get('id'))
-            form.save(request, assignment_pk, id_list)
+            if not classwork:
+                form.save(request, assignment_pk, id_list)
         return redirect('../')
 
 class UnsubmitClassworkView(LoginRequiredMixin, View):
