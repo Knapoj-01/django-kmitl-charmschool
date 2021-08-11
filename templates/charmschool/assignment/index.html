@@ -33,9 +33,6 @@
             {% csrf_token %}
             {% include "components/form_base.html" %}
             <small>
-            <p><b>หมายเหตุ:</b> นักศึกษาสามารถเพิ่มงานได้เพียงครั้งเดียวเท่านั้น เมื่อกดบันทึกข้อมูลแล้ว 
-            จะไม่สามารถแก้ไขข้อความและไฟล์ที่ส่งได้อีก โปรดตรวจสอบข้อมูลของท่านให้ละเอียด</p>
-            </small>
             <div class="d-sm-flex flex-sm-row-reverse">
                 <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
             </div>
@@ -49,10 +46,6 @@
         {% include "components/file_list.html" %}
     {% endwith %}
     <div class="mt-2">
-        <small>
-            <p><b>หมายเหตุ:</b> ท่านไม่สามารถแก้ไขข้อมูลที่ส่งได้ด้วยตนเอง 
-            หากต้องการรีเซตการส่งงาน โปรดติดต่อผู้ดูแลระบบ</p>
-        </small>
     </div>
     {% endif %}
     {% if classwork.graded %}
@@ -61,6 +54,8 @@
         <li><b>คะแนนที่ได้:</b> {{classwork.score}}</li>
         <li><b>ความคิดเห็นของผู้สอน:</b> {{classwork.feedback}}</li>
     </ul>
+    {% else %}
+    <div class="mt-2"> {% include "components/unsubmit.html" %} </div>
     {% endif %}
     {% endif %}
     {% else %}

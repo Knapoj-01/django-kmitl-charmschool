@@ -157,7 +157,7 @@ class MemberProfileView(GetInfoMixin, LoginRequiredMixin, TemplateView):
     template_name = 'charmschool/group/profile.html'
     def get_context_data(self,group_pk, student_pk, **kwargs):
         context = super().get_context_data(group_pk,**kwargs)
-        object = Student.objects.get(pk = student_pk)
+        object = get_object_or_404(Student, pk = student_pk)  
         queryset = object.classwork_set.all()
         if 'q' in self.request.GET.keys():
             queryset = queryset.filter(assignment__subject__contains = self.request.GET.get('q'))

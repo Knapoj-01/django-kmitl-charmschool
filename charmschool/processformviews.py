@@ -54,8 +54,7 @@ class SubmitClassworkView(LoginRequiredMixin,View):
             assignment__id = assignment_pk
             )
         if classwork:
-            instance = classwork[0]
-            form = AddClassWorkForm(request.POST, instance=instance)
+            return redirect('../')
         else : 
             form = AddClassWorkForm(request.POST)
         if form.is_valid():
@@ -74,6 +73,17 @@ class SubmitClassworkView(LoginRequiredMixin,View):
             form.save(request, assignment_pk, id_list)
         return redirect('../')
 
+class UnsubmitClassworkView(LoginRequiredMixin, View):
+    def post(self,request,group_pk, assignment_pk,*args, **kwargs):
+        if 'delete' in request.POST.keys():
+            classwork = Classwork.objects.filter(
+                student = request.user.student,
+                assignment__id = assignment_pk
+                )
+            if classwork:
+                classwork.delete()
+        return redirect('../')
+
 class GradeClassworkView(LoginRequiredMixin,View):
     def post(self,request,group_pk, assignment_pk,*args, **kwargs):
         if 'score' in request.POST.keys():
@@ -83,3 +93,4 @@ class GradeClassworkView(LoginRequiredMixin,View):
             classwork.graded = True
             classwork.save()
         return redirect(request.POST.get('success_url'))
+
