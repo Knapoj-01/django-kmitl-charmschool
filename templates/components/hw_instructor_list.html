@@ -27,15 +27,16 @@
                             <b>ไฟล์แนบ:</b> <br>
                             {% with classwork.works as works %}
                             {% include "components/file_list.html" %}
-                            {% endwith %}<br>
+                            {% endwith %}
                             {% endif %}
-                            {% else %}
-                            -
-                            {% endif %}
+                           <br>
                             <b>ความคิดเห็น:</b> <br>
                             <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
                             <input type="hidden" name="success_url" value="{{request.get_full_path}}">
                             <input type="text" name="feedback" class="form-control form-control-sm" {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
+                            {% else %}
+                            -
+                            {% endif %}
                         </small>
                     </td>
                     <td>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}

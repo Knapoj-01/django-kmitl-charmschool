@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content %}
-<div class="hero m-3">
+<div class="hero m-lg-3">
     <div class="row">
         <div class="col-lg">
         </div>
@@ -14,7 +14,7 @@
         </div>
     </div>
 </div>
-<div class='mx-3'>{% if user.is_authenticated %}{% include 'components/messages.html' %}{% endif %}</div>
+<div class='mx-lg-3'>{% if user.is_authenticated %}{% include 'components/messages.html' %}{% endif %}</div>
 <div class="row mx-lg-3">
     <div class="col-md-4">
         <div class="group-info card">
