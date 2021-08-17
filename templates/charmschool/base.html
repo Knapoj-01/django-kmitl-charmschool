@@ -14,6 +14,7 @@
         </div>
     </div>
 </div>
+<div class='mx-3'>{% if user.is_authenticated %}{% include 'components/messages.html' %}{% endif %}</div>
 <div class="row mx-lg-3">
     <div class="col-md-4">
         <div class="group-info card">

@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from .forms import *
 from .googleapiutils import *
 from .models import Classwork
+from django.contrib import messages
 
 class AddContentView(LoginRequiredMixin, View):
     def post(self,request,*args, **kwargs):
@@ -53,25 +54,27 @@ class SubmitClassworkView(LoginRequiredMixin,View):
             student = request.user.student,
             assignment__id = assignment_pk
             )
-        if classwork:
-            return redirect('../')
-        else : 
+        if not classwork:
             form = AddClassWorkForm(request.POST)
-        if form.is_valid():
-            id_list = None
-            if request.FILES:
-                service = token_authentication(request)
-                charmschool = create_folder_if_not_exists(service, 'Charmschool')
-                assignments_folder = create_folder_if_not_exists(
-                    service, 'assignments', charmschool.get('id')
-                    )
-                folder = create_folder_if_not_exists(
-                    service, str(assignment_pk), assignments_folder.get('id')
-                    )
-                files = request.FILES.getlist('works')
-                id_list = upload_user_contents(service,files, request, folder.get('id'))
-            if not classwork:
-                form.save(request, assignment_pk, id_list)
+            if form.is_valid():
+                model = form.save(request, assignment_pk)
+                id_list = None
+                if request.FILES:
+                    service = token_authentication(request)
+                    charmschool = create_folder_if_not_exists(service, 'Charmschool')
+                    assignments_folder = create_folder_if_not_exists(
+                        service, 'assignments', charmschool.get('id')
+                        )
+                    folder = create_folder_if_not_exists(
+                        service, str(assignment_pk), assignments_folder.get('id')
+                        )
+                    files = request.FILES.getlist('works')
+                    id_list = upload_user_contents(service,files, request, folder.get('id'))
+                    if id_list: model.works = json.dumps(id_list)
+                    model.save()
+                    messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
+                else: messages.warning(request, r'<b>เตือน:</b> ท่านได้ทำการส่งงานสำเร็จ แต่ไม่พบไฟล์แนบ หากนี่เป็นข้อผิดพลาด กรุณาส่งงานใหม่')
+            else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้')
         return redirect('../')
 
 class UnsubmitClassworkView(LoginRequiredMixin, View):
@@ -83,6 +86,7 @@ class UnsubmitClassworkView(LoginRequiredMixin, View):
                 )
             if classwork:
                 classwork.delete()
+                messages.success(request, r'สำเร็จ: ท่านได้ทำการยกเลิกการส่งงานแล้ว')
         return redirect('../')
 
 class GradeClassworkView(LoginRequiredMixin,View):

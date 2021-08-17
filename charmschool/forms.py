@@ -47,11 +47,10 @@ class AddClassWorkForm(forms.ModelForm):
             'message': 'ข้อความ',
             'works': 'ไฟล์งานที่จะส่ง'
         }
-    def save(self, request, assignment_pk, classwork_id_list = None):
+    def save(self, request, assignment_pk):
         model =  super().save(commit=False)
         model.student = request.user.student
         model.assignment = Assignment.objects.get(pk=assignment_pk)
-        if classwork_id_list: model.works = json.dumps(classwork_id_list)
         model.save()
         return model
 
