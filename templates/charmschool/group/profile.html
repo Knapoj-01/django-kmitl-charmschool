@@ -15,6 +15,9 @@
         {% include "components/search_form.html" %}
     </div>
     {% if classworks %}
+    <form action="grade/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="success_url" value="{{request.get_full_path}}">
     <table class="table table-hover ">
         <thead>
             <tr>
@@ -28,8 +31,6 @@
         <tbody>
             {% for classwork in classworks %}
             <tr>
-                <form action="../../assignment/{{classwork.assignment.pk}}/grade/" method="post">
-                    {% csrf_token %}
                     <th scope="row">{{forloop.counter}}</th>
                     <td><a href="../../assignment/{{classwork.assignment.pk}}/">{{classwork.assignment.subject}}</a>
                     </td>
@@ -41,34 +42,31 @@
                             <b>ไฟล์แนบ:</b> <br>
                             {% with classwork.works as works %}
                             {% include "components/file_list.html" %}
-                            {% endwith %}<br>
+                            {% endwith %}
+                            {% endif %}<br>
                             <b>ความคิดเห็น:</b> <br>
-                            <input type="hidden" name="success_url" value="{{request.get_full_path}}">
                             <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
                             <input type="text" name="feedback" class="form-control form-control-sm"
                                 {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
-                            {% endif %}
+                            
                         </small>
                     </td>
-                    <td style='max-width:100px;'>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}
-                        {{classwork.submit_date|time:"H:i" }} น. {% else %} -{% endif %}</td>
+                    <td style='max-width:100px;'>
+                        {% include "components/late_check.html" %}
+                    </td>
                     <td style='min-width: 80px; vertical-align: bottom'>{% if classwork %}
                         <input type="number" class="form-control-sm p-0" name="score" min="0"
                             max="{{classwork.assignment.max_score}}" style='width:2.15rem;' value={{classwork.score}}>
-                        {% if classwork.score %}
-                        <button class="btn btn-warning btn-sm p-0 ms-1" type="submit"><i
-                                class="bi bi-pencil-square"></i></button>
-                        {% else %}
-                        <button class="btn btn-success btn-sm p-0 ms-1" type="submit"><i
-                                class="bi bi-plus"></i></button>
-                        {% endif %}
                         {% endif %}
                     </td>
-                </form>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <div class="d-sm-flex flex-sm-row-reverse my-3">
+    <button type="submit" name="submit" class="btn btn-warning"><i i class="bi bi-save me-2"></i> บันทึกการเปลี่ยนแปลง</button> 
+    </div>
+    </form>
     {% else %}
     <span>ไม่มีรายการ</span> <br>
     {% endif %}

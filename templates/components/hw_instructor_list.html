@@ -1,5 +1,8 @@
 <div class="card-body table-responsive">
     {% if classwork_list %}
+    <form action="grade/" method="post">
+    <input type="hidden" name="success_url" value="{{request.get_full_path}}">
+    {% csrf_token %}
     <table class="table table-hover">
         <thead>
             <tr>
@@ -13,8 +16,6 @@
         <tbody>
             {% for student in classwork_list %}
             <tr>
-                <form action="grade/" method="post">
-                    {% csrf_token %}
                     <th scope="row">{{forloop.counter0|add:classwork_list.start_index}}</th>
                     <td>{{student.0.student_id}}</td>
                     <td>
@@ -32,34 +33,28 @@
                            <br>
                             <b>ความคิดเห็น:</b> <br>
                             <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
-                            <input type="hidden" name="success_url" value="{{request.get_full_path}}">
                             <input type="text" name="feedback" class="form-control form-control-sm" {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
                             {% else %}
                             -
                             {% endif %}
                         </small>
                     </td>
-                    <td>{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}
-                        {{classwork.submit_date|time:"H:i" }} น. {% else %} -{% endif %}</td>
+                    <td>{% include "components/late_check.html" %}</td>
                     <td style='min-width: 80px; vertical-align: bottom'>{% if classwork %}
                         <input type="number" class="form-control-sm p-0" name="score" min="0"
                             max="{{classwork.assignment.max_score}}" style='width:2.15rem;' value={{classwork.score}}>
-                        {% if classwork.score %}
-                        <button class="btn btn-warning btn-sm p-0 ms-1" type="submit"><i
-                                class="bi bi-pencil-square"></i></button>
-                        {% else %}
-                        <button class="btn btn-success btn-sm p-0 ms-1" type="submit"><i
-                                class="bi bi-plus"></i></button>
-                        {% endif %}
                         {% endif %}
                     </td>
-                </form>
                 {% endwith %}
             </tr>
             {% endfor %}
             </tr>
         </tbody>
     </table>
+    <div class="d-sm-flex flex-sm-row-reverse my-3">
+    <button type="submit" name="submit" class="btn btn-warning"><i i class="bi bi-save me-2"></i> บันทึกการเปลี่ยนแปลง</button> 
+    </div>
+    </form>
     {% else %}
     <span>ไม่มีรายการ</span>
     {% endif %}

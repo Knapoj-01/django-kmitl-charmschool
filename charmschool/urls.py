@@ -27,6 +27,7 @@ urlpatterns += [
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/submit/', SubmitClassworkView.as_view()),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/unsubmit/', UnsubmitClassworkView.as_view()),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/grade/', GradeClassworkView.as_view()),
+    path('group/<int:group_pk>/members/<int:student_pk>/grade/', GradeClassworkView.as_view()),
 ]
 
 # Google Drive Testing

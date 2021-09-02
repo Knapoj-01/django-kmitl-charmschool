@@ -161,7 +161,7 @@ class MemberProfileView(GetInfoMixin, LoginRequiredMixin, TemplateView):
         queryset = object.classwork_set.all()
         if 'q' in self.request.GET.keys():
             queryset = queryset.filter(assignment__subject__contains = self.request.GET.get('q'))
-        queryset = classwork_queryset_deserial(queryset.order_by('submit_date'))
+        queryset = classwork_queryset_deserial(queryset.order_by('assignment__due_date'))
         context["member"] = object
         context['classworks'] = queryset
         return context

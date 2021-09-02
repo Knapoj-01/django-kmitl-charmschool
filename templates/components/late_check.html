@@ -1,0 +1,8 @@
+{% if classwork.submit_date %}{{classwork.submit_date|date:"d/m/Y" }}
+{{classwork.submit_date|time:"H:i" }} น.
+{% if classwork.late_submit %}
+<span class="badge rounded-pill bg-danger">ล่าช้า</span>
+{% else %}
+<span class="badge rounded-pill bg-success">ในเวลา</span>
+{% endif %}
+{% else %} -{% endif %}

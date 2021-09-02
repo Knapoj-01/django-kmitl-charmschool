@@ -1,4 +1,6 @@
 from django.db.models.fields import PositiveBigIntegerField
+from django.http.response import HttpResponse
+from google.auth.transport import Request
 from charmschool.importdataviews import import_data
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
@@ -90,12 +92,18 @@ class UnsubmitClassworkView(LoginRequiredMixin, View):
         return redirect('../')
 
 class GradeClassworkView(LoginRequiredMixin,View):
-    def post(self,request,group_pk, assignment_pk,*args, **kwargs):
-        if 'score' in request.POST.keys():
-            classwork = Classwork.objects.get(pk = request.POST.get('classwork_id'))
-            classwork.score = request.POST.get('score')
-            classwork.feedback = request.POST.get('feedback')
-            classwork.graded = True
-            classwork.save()
+    def post(self,request,*args, **kwargs):
+        if 'score' and 'classwork_id' in request.POST.keys():
+            for id, score, feedback in zip(
+                request.POST.getlist('classwork_id'), 
+                request.POST.getlist('score'), 
+                request.POST.getlist('feedback')):
+                if score:
+                    classwork = Classwork.objects.get(pk = id)
+                    classwork.score = score
+                    classwork.feedback = feedback
+                    classwork.graded = True
+                    classwork.save()   
+        messages.success(request, r'สำเร็จ: บันทึกคะแนนและข้อคิดเห็นของผู้สอนแล้ว')
         return redirect(request.POST.get('success_url'))
 

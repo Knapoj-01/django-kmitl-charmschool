@@ -94,6 +94,10 @@ class Classwork(models.Model):
 
     def __str__(self):
         return str(self.student) + ' '+ str(self.assignment)
+    def late_submit(self):
+        if self.submit_date > self.assignment.due_date:
+            return True
+        else: return False
 
 class GroupData(models.Model):
     class Meta:

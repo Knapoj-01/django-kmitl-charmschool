@@ -39,6 +39,8 @@
         </form>
     </div>
     {% else %}
+    <div class="mb-3"><small><b> วัน-เวลาที่ส่งจริง: </b> {% include "components/late_check.html" %}</small> <br></div>
+    
     {{classwork.message}}
     {% if classwork.works %}
     <h5 class='mt-3'>ไฟล์แนบ</h5>
