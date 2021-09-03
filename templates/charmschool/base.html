@@ -5,17 +5,17 @@
 {% block content %}
 <div class="hero m-lg-3">
     <div class="row">
-        <div class="col-lg">
+        <div class="col-md">
         </div>
-        <div class="col-lg-6">
+        <div class="col-md-6">
             <img src="{% static 'assets/images/hero-image.jpg' %}" alt="Charm" style='width: 100%;'>
         </div>
-        <div class="col-lg">
+        <div class="col-md">
         </div>
     </div>
 </div>
-<div class='mx-lg-3'>{% if user.is_authenticated %}{% include 'components/messages.html' %}{% endif %}</div>
-<div class="row mx-lg-3">
+<div class="row mx-md-3">
+<div class='col-md-12 p-0'>{% if user.is_authenticated %}{% include 'components/messages.html' %}{% endif %}</div>
     <div class="col-md-4">
         <div class="group-info card">
             <div class="group-data m-3">

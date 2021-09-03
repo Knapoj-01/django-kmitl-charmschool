@@ -38,14 +38,12 @@ class AddCommentForm(forms.ModelForm):
 class AddClassWorkForm(forms.ModelForm):
     class Meta:
         model = Classwork
-        fields = ['message','works']
+        fields = ['message']
         widgets = {
             'message': forms.Textarea(attrs={'rows': 3, 'class':'form-control'}),
-            'works': forms.ClearableFileInput(attrs={'accept':'.pdf,.jpg,.jpeg','multiple': True})
         }
         labels= {
-            'message': 'ข้อความ',
-            'works': 'ไฟล์งานที่จะส่ง'
+            'message': 'ข้อความ'
         }
     def save(self, request, assignment_pk):
         model =  super().save(commit=False)

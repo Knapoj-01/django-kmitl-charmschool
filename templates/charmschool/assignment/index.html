@@ -6,15 +6,15 @@
     <span class="snippets">คะแนนเต็ม {{assignment.max_score}} คะแนน</span><br />
     <small>
         <b>โพสต์โดย:</b> {{assignment.author.name}} {{assignment.author.surname}}
-        <b>เมื่อ: {{assignment.pub_date|date:"d F Y"}} {{assignment.pub_date|time:"H:i"}} น.</b><br/>
+        <b>เมื่อ: {{assignment.pub_date|date:"d F Y"}} {{assignment.pub_date|time:"H:i"}} น.</b><br />
         {% if is_instructor %}
-            <b>กลุ่มที่สามารถเข้าถึง:</b> 
-            {% for group in assignment.visible_by.all %} 
-                <span class="badge rounded-pill bg-info text-dark">{{group}}</span>
-            {% endfor %}
-            <br/>
+        <b>กลุ่มที่สามารถเข้าถึง:</b>
+        {% for group in assignment.visible_by.all %}
+        <span class="badge rounded-pill bg-info text-dark">{{group}}</span>
+        {% endfor %}
+        <br />
         {% endif %}
-        <span class="badge rounded-pill bg-warning text-dark">กำหนดส่ง</span>  
+        <span class="badge rounded-pill bg-warning text-dark">กำหนดส่ง</span>
         <b>{{assignment.due_date|date:"d F Y"}} {{assignment.due_date|time:"H:i"}} น.</b>
     </small>
     <hr />
@@ -29,23 +29,30 @@
         เพิ่มงาน
     </button>
     <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
-        <form action="submit/" method="post" enctype="multipart/form-data">
+        <form action="submit/" method="post" enctype="multipart/form-data" id='classworkform'>
             {% csrf_token %}
             {% include "components/form_base.html" %}
-            <small>
+            <div class="mb-2"><label for="file">ไฟล์งานที่จะส่ง (เลือกได้หลายไฟล์):</label></div>
+            <input type="file" name="usr_file" id="file" class='form-control' multiple><br>
+            <div class="mb-3 d-sm-flex flex-sm-row-reverse">
+                <button onclick="uploadFiles()" class='btn btn-warning' id='uploadbtn' type ='button'> <i class="bi bi-cloud-upload me-2"></i> อัพโหลดไฟล์</button>
+                <div class="d-inline-flex p-2"><span class="me-3 align-middle" id="message"></span></div>
+            </div>
+            <span><small>ในกรณีที่ต้องการแนบไฟล์ หลังจากเลือกไฟล์และตรวจสอบจนแน่ใจแล้ว
+             โปรดปุ่มกดอัพโหลดไฟล์ก่อน หลังจากขึ้นข้อความแสดงว่าอัพโหลดสำเร็จ จึงกดปุ่มบันทึกข้อมูล</small></span>
             <div class="d-sm-flex flex-sm-row-reverse">
-                <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
+                <button class="btn btn-secondary my-3" type='submit' id='submitbtn'><i class="bi bi-save me-2"></i> บันทึกข้อมูล</button>
             </div>
         </form>
     </div>
     {% else %}
     <div class="mb-3"><small><b> วัน-เวลาที่ส่งจริง: </b> {% include "components/late_check.html" %}</small> <br></div>
-    
+
     {{classwork.message}}
     {% if classwork.works %}
     <h5 class='mt-3'>ไฟล์แนบ</h5>
     {% with classwork.works as works %}
-        {% include "components/file_list.html" %}
+    {% include "components/file_list.html" %}
     {% endwith %}
     <div class="mt-2">
     </div>
@@ -68,5 +75,57 @@
         {% endif %}
     </div>
 </div>
+{% if is_student %}
+<script>
+    function uploadFiles() {
+        var files = document.getElementById('file').files;
+        if (files.length == 0){
+            document.getElementById('message').innerHTML = "ท่านยังไม่ได้เลือกไฟล์ใด";
+            return false;
+        }
+        for (let i = 0; i < files.length; i++) {
+            document.getElementById('message').innerHTML = "กำลังอัพโหลดไฟล์ โปรดรอสักครู่";
+            document.getElementById('submitbtn').style.display = "none";
+            var file = files[i]
+            const filename = '{{request.user.username}}_' + file.name
+            var metadata = {
+                'name': filename ,
+                'mimeType': file.type,
+                'parents': ['{{target_folder}}'],
+            };
+            var accessToken =
+                '{{token}}';
+            var form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], {
+                type: 'application/json'
+            }));
+            form.append('file', file);
 
+            fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+                method: 'POST',
+                headers: new Headers({
+                    'Authorization': 'Bearer ' + accessToken
+                }),
+                body: form,
+            }).then((res) => {
+                return res.json();
+            }).then(function (val) {
+                var node1 = document.createElement("INPUT");
+                node1.setAttribute('type', 'hidden');
+                node1.setAttribute('name', 'file_id');
+                node1.setAttribute('value', val.id);
+                var node2 = document.createElement("INPUT");
+                node2.setAttribute('type', 'hidden');
+                node2.setAttribute('name', 'file_name');
+                node2.setAttribute('value', filename);
+                document.getElementById("classworkform").appendChild(node1);
+                document.getElementById("classworkform").appendChild(node2);
+                document.getElementById('message').innerHTML = "อัพโหลดไฟล์สำเร็จ";
+                document.getElementById('submitbtn').style.display = "block";
+                document.getElementById('uploadbtn').setAttribute('disabled', '');
+            });
+        }
+    }
+</script>
+{% endif %}
 {% endblock course_content %}

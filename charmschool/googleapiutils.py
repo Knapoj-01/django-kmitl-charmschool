@@ -22,7 +22,7 @@ def token_authentication(request):
         if not creds.valid:
             return False
         else:
-            return build('drive', 'v3', credentials=creds)
+            return build('drive', 'v3', credentials=creds), creds
 def modify_permissions(service, file_id):
     domain_permission = {
         'type': 'domain',

@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.views.generic import TemplateView 
 
 urlpatterns = [
     path('', include('charmschool.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('site_auth.urls')),
-
+    #path('gdtesting/', TemplateView.as_view(template_name = 'charmschool/gdtesting/jsupload.html'))
 ]

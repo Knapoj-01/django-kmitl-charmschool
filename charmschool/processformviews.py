@@ -60,19 +60,15 @@ class SubmitClassworkView(LoginRequiredMixin,View):
             form = AddClassWorkForm(request.POST)
             if form.is_valid():
                 model = form.save(request, assignment_pk)
-                id_list = None
-                if request.FILES:
-                    service = token_authentication(request)
-                    charmschool = create_folder_if_not_exists(service, 'Charmschool')
-                    assignments_folder = create_folder_if_not_exists(
-                        service, 'assignments', charmschool.get('id')
-                        )
-                    folder = create_folder_if_not_exists(
-                        service, str(assignment_pk), assignments_folder.get('id')
-                        )
-                    files = request.FILES.getlist('works')
-                    id_list = upload_user_contents(service,files, request, folder.get('id'))
-                    if id_list: model.works = json.dumps(id_list)
+                if 'file_id' in request.POST.keys():
+                    file_list = []
+                    id_list = request.POST.getlist('file_id')
+                    name_list = request.POST.getlist('file_name')
+                    for id, name in zip(id_list, name_list):
+                        file_list.append({'name': name, 'id': id})
+                    print(file_list)
+                    print(name_list)
+                    model.works = json.dumps(file_list)
                     model.save()
                     messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
                 else: messages.warning(request, r'<b>เตือน:</b> ท่านได้ทำการส่งงานสำเร็จ แต่ไม่พบไฟล์แนบ หากนี่เป็นข้อผิดพลาด กรุณาส่งงานใหม่')
