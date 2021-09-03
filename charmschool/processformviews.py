@@ -66,8 +66,6 @@ class SubmitClassworkView(LoginRequiredMixin,View):
                     name_list = request.POST.getlist('file_name')
                     for id, name in zip(id_list, name_list):
                         file_list.append({'name': name, 'id': id})
-                    print(file_list)
-                    print(name_list)
                     model.works = json.dumps(file_list)
                     model.save()
                     messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
