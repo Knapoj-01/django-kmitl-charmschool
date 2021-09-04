@@ -132,23 +132,24 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
                 clist = paginator.page(paginator.num_pages)
             context['classwork_list'] = clist
         if self.request.user.is_student():
-            service, creds = token_authentication(self.request)
-            charmschool = create_folder_if_not_exists(service, 'Charmschool')
-            assignments_folder = create_folder_if_not_exists(
-                service, 'assignments', charmschool.get('id')
-                )
-            folder = create_folder_if_not_exists(
-                service, str(assignment_pk), assignments_folder.get('id')
-                )
-            context['target_folder'] = folder.get('id')
-            context['token'] = creds.token
-            context['form'] = AddClassWorkForm
             classwork_queryset = Classwork.objects.filter(
             assignment__id = assignment_pk, student = self.request.user.student
             )
             if classwork_queryset: 
                 classwork = classwork_queryset_deserial(classwork_queryset)[0]
                 context['classwork'] = classwork
+            else:
+                service, creds = token_authentication(self.request)
+                charmschool = create_folder_if_not_exists(service, 'Charmschool')
+                assignments_folder = create_folder_if_not_exists(
+                    service, 'assignments', charmschool.get('id')
+                    )
+                folder = create_folder_if_not_exists(
+                    service, str(assignment_pk), assignments_folder.get('id')
+                    )
+                context['target_folder'] = folder.get('id')
+                context['token'] = creds.token
+                context['form'] = AddClassWorkForm
         return context
 
 

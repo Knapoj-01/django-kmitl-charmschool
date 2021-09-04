@@ -64,11 +64,16 @@ class SubmitClassworkView(LoginRequiredMixin,View):
                     file_list = []
                     id_list = request.POST.getlist('file_id')
                     name_list = request.POST.getlist('file_name')
-                    for id, name in zip(id_list, name_list):
-                        file_list.append({'name': name, 'id': id})
-                    model.works = json.dumps(file_list)
-                    model.save()
-                    messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
+                    service, creds = token_authentication(request)
+                    try: 
+                        for id, name in zip(id_list, name_list):
+                            file_list.append({'name': name, 'id': id})
+                            modify_permissions(service, id)
+                        model.works = json.dumps(file_list)
+                        model.save()
+                        messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
+                    except:
+                        messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Perm_Error)')
                 else: messages.warning(request, r'<b>เตือน:</b> ท่านได้ทำการส่งงานสำเร็จ แต่ไม่พบไฟล์แนบ หากนี่เป็นข้อผิดพลาด กรุณาส่งงานใหม่')
             else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้')
         return redirect('../')

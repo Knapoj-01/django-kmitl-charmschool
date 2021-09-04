@@ -48,7 +48,6 @@ def create_folder_if_not_exists(service, folder_name: str, parent_folder_id = No
             file_metadata.update({'parents' : [parent_folder_id]})
         folder = service.files().create(body=file_metadata, fields='id').execute()
     else: folder = folder[0]
-    modify_permissions(service, folder['id'])
     return folder
 
 def upload_user_contents(service, files, request, parent_folder_id):
