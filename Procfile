@@ -1,1 +1,1 @@
-web: gunicorn CharmWeb.wsgi
+web: gunicorn CharmWeb.wsgi --timeout 15 --keep-alive 5 --log-level debug

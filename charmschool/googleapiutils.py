@@ -19,6 +19,9 @@ def token_authentication(request):
             client_id = socialapp.client_id, 
             client_secret=socialapp.secret
             )
+        if creds.token != socialtoken.token:
+            socialtoken.token = creds.token
+            socialtoken.save()
         if not creds.valid:
             return False
         else:

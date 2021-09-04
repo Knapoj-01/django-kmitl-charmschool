@@ -49,7 +49,6 @@ class AddClassWorkForm(forms.ModelForm):
         model =  super().save(commit=False)
         model.student = request.user.student
         model.assignment = Assignment.objects.get(pk=assignment_pk)
-        model.save()
         return model
 
 class AddAssignmentForm(forms.ModelForm):

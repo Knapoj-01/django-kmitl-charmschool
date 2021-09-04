@@ -70,12 +70,14 @@ class SubmitClassworkView(LoginRequiredMixin,View):
                             file_list.append({'name': name, 'id': id})
                             modify_permissions(service, id)
                         model.works = json.dumps(file_list)
-                        model.save()
                         messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
                     except:
-                        messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Perm_Error)')
+                        print('Error')
+                        messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Permission Error)')
                 else: messages.warning(request, r'<b>เตือน:</b> ท่านได้ทำการส่งงานสำเร็จ แต่ไม่พบไฟล์แนบ หากนี่เป็นข้อผิดพลาด กรุณาส่งงานใหม่')
-            else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้')
+                model.save()
+            else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Form invalid)')
+        else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Row Exists)')
         return redirect('../')
 
 class UnsubmitClassworkView(LoginRequiredMixin, View):
