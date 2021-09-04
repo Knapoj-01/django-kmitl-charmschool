@@ -34,9 +34,9 @@
             {% include "components/form_base.html" %}
             <div class="mb-2"><label for="file">ไฟล์งานที่จะส่ง (เลือกได้หลายไฟล์):</label></div>
             <input type="file" name="usr_file" id="file" class='form-control' onchange="uploadFiles()" multiple><br>
-            <div class="mb-3 d-sm-flex flex-sm-row-reverse">
-                <div class="d-inline-flex p-2"><span class="me-3 align-middle" id="message"></span>
-                <button class="btn btn-secondary my-3" type='submit' id='submitbtn'><i class="bi bi-save me-2"></i> บันทึกข้อมูล</button>
+            <div class="my-3 d-sm-flex flex-sm-row-reverse">
+                <button class="btn btn-secondary" type='submit' id='submitbtn'><i class="bi bi-save me-2"></i> บันทึกข้อมูล</button>
+                <span class="me-3 align-middle py-2" id="message"></span>
             </div>
         </form>
     </div>
