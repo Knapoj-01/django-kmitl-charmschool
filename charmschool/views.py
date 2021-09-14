@@ -11,6 +11,7 @@ from .forms import *
 from .mixins import *
 from .utils import *
 from .googleapiutils import *
+from django.contrib import messages
 
 class IndexView(TemplateView):
     template_name='charmschool/index.html'
@@ -151,6 +152,34 @@ class AssignmentView(GetInfoMixin,LoginRequiredMixin,TemplateView):
                 context['token'] = creds.token
                 context['form'] = AddClassWorkForm
         return context
+    def post(self,request,group_pk, assignment_pk,*args, **kwargs):
+        classwork = Classwork.objects.filter(
+            student = request.user.student,
+            assignment__id = assignment_pk
+            )
+        if not classwork:
+            form = AddClassWorkForm(request.POST)
+            if form.is_valid():
+                model = form.save(request, assignment_pk)
+                if 'file_id' in request.POST.keys():
+                    file_list = []
+                    id_list = request.POST.getlist('file_id')
+                    name_list = request.POST.getlist('file_name')
+                    service, creds = token_authentication(request)
+                    try: 
+                        for id, name in zip(id_list, name_list):
+                            file_list.append({'name': name, 'id': id})
+                            modify_permissions(service, id)
+                        model.works = json.dumps(file_list)
+                        messages.success(request, r'<b>สำเร็จ:</b> ท่านได้ทำการส่งการบ้าน และแนบไฟล์สำเร็จแล้ว')
+                    except:
+                        print('Error')
+                        messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Permission Error)')
+                else: messages.warning(request, r'<b>เตือน:</b> ท่านได้ทำการส่งงานสำเร็จ แต่ไม่พบไฟล์แนบ หากนี่เป็นข้อผิดพลาด กรุณาส่งงานใหม่')
+                model.save()
+            else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Form invalid)')
+        else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Row Exists)')
+        return redirect('./')
 
 
 class GroupMembersView(GetInfoMixin,LoginRequiredMixin,ListView):

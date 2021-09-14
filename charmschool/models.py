@@ -85,7 +85,7 @@ class Course_Comment(Content_Base):
 class Classwork(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    message = models.CharField(max_length=1000, null=True)
+    message = models.CharField(max_length=3000, null=True)
     submit_date = models.DateTimeField(default=timezone.now)
     works = models.JSONField(null =True, blank=True)
     score = models.IntegerField(null=True,blank=True)

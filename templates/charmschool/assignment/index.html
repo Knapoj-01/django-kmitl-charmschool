@@ -29,11 +29,15 @@
         เพิ่มงาน
     </button>
     <div class="collapse mt-3 p-3" style='background-color: rgb(255,239,213); border-radius 5px;' id="AddUserForm">
-        <form action="submit/" method="post" enctype="multipart/form-data" id='classworkform'>
+        <form action="" method="post" id='classworkform'>
             {% csrf_token %}
             {% include "components/form_base.html" %}
             <div class="mb-2"><label for="file">ไฟล์งานที่จะส่ง (เลือกได้หลายไฟล์):</label></div>
             <input type="file" name="usr_file" id="file" class='form-control' onchange="uploadFiles()" multiple><br>
+            <div id='fs_container'>
+            ไฟล์งานที่เลือก:
+            <ul id='f_selected' class='mx-3'></ul>
+            </div>
             <div class="my-3 d-sm-flex flex-sm-row-reverse">
                 <button class="btn btn-secondary" type='submit' id='submitbtn'><i class="bi bi-save me-2"></i> บันทึกข้อมูล</button>
                 <span class="me-3 align-middle py-2" id="message"></span>
@@ -71,6 +75,7 @@
 </div>
 {% if is_student %}
 <script>
+    document.getElementById('fs_container').style.display = "none";
     function uploadFiles() {
         var files = document.getElementById('file').files;
         if (files.length == 0){
@@ -116,6 +121,10 @@
                 document.getElementById("classworkform").appendChild(node2);
                 document.getElementById('message').innerHTML = "อัพโหลดไฟล์สำเร็จ";
                 document.getElementById('submitbtn').style.display = "block";
+                document.getElementById('fs_container').style.display = "block";
+                var node3 = document.createElement("LI");
+                node3.innerHTML = filename;
+                document.getElementById('fs_container').appendChild(node3);
             });
         }
     }

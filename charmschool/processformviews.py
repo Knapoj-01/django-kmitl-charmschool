@@ -49,7 +49,7 @@ class DeleteContentView(LoginRequiredMixin,View):
             Course_Content.objects.get(pk = kwargs.get('content_pk')).delete()
         else: return redirect('classroom', group_pk=kwargs.get('group_pk'))
         return redirect('classroom', group_pk=kwargs.get('group_pk'))
-
+'''
 class SubmitClassworkView(LoginRequiredMixin,View):
     def post(self,request,group_pk, assignment_pk,*args, **kwargs):
         classwork = Classwork.objects.filter(
@@ -79,7 +79,7 @@ class SubmitClassworkView(LoginRequiredMixin,View):
             else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Form invalid)')
         else: messages.error(request, r'<b>พบข้อผิดพลาด</b>: ไม่สามารถส่งงานได้ (Row Exists)')
         return redirect('../')
-
+'''
 class UnsubmitClassworkView(LoginRequiredMixin, View):
     def post(self,request,group_pk, assignment_pk,*args, **kwargs):
         if 'delete' in request.POST.keys():
