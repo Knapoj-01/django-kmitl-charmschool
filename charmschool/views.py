@@ -239,7 +239,7 @@ class CollectFileView(LoginRequiredMixin,View):
         media = MediaIoBaseUpload(fh, mimetype='text/plain')
         gd_file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
 
-        return redirect('.')
+        return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>กำลังดำเนินการ.... ห้ามปิดแท็บหรือรีเฟรชเพจจนกว่าจะเสร็จสิ้น!!!</body></html>')
 
     def get(self, request, group_pk, assignment_pk, *args, **kwargs):
         if not request.session.has_key('processid'):
@@ -294,6 +294,6 @@ class CollectFileView(LoginRequiredMixin,View):
             print(i)
             if dt.total_seconds() >= 5:
                 self.request.session['processid'] = i+1
-                return redirect('.')
+                return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>Uploading.. Please wait!!</body></html>')
         del self.request.session["processid"]
         return redirect('../')   
