@@ -292,7 +292,7 @@ class CollectFileView(LoginRequiredMixin,View):
             end_time = datetime.now()
             dt = end_time - start_time
             print(i)
-            if dt.total_seconds() >= 5:
+            if dt.total_seconds() >= 2:
                 self.request.session['processid'] = i+1
                 return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>Uploading.. Please wait!!</body></html>')
         del self.request.session["processid"]
