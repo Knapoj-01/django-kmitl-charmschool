@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core import paginator
 from django.http import request
 from django.shortcuts import redirect, get_object_or_404
@@ -211,11 +212,13 @@ class MemberProfileView(GetInfoMixin, LoginRequiredMixin, TemplateView):
         return context
     
 
-class CollectFileView(View):
+class CollectFileView(LoginRequiredMixin,View):
     def post(self, request, group_pk, assignment_pk, *args, **kwargs):
+        self.request.session['processid'] = 0
         q = Assignment.objects.filter(pk = assignment_pk)
         assignment = q[0]
         classworks = classwork_queryset_deserial(Classwork.objects.filter(assignment = assignment_pk))
+        
         service, creds = token_authentication(request)
         response = service.files().list(
             q="mimeType = 'application/vnd.google-apps.folder' and name = '%s'" % str(assignment),
@@ -235,13 +238,33 @@ class CollectFileView(View):
         fh = BytesIO(contents.encode('utf-8'))
         media = MediaIoBaseUpload(fh, mimetype='text/plain')
         gd_file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+
+        return redirect('.')
+
+    def get(self, request, group_pk, assignment_pk, *args, **kwargs):
+        if not request.session.has_key('processid'):
+           return redirect('../')
+        q = Assignment.objects.filter(pk = assignment_pk)
+        assignment = q[0]
+        classworks = classwork_queryset_deserial(Classwork.objects.filter(assignment = assignment_pk))
         
-        for classwork in classworks:
-            fp = create_folder_if_not_exists(service,str(classwork.student.student_id), folder.get('id'))
+        service, creds = token_authentication(request)
+        folder = create_folder_if_not_exists(service, str(assignment))     
+        pn =  int(self.request.session['processid']) 
+        end_time = 0 
+        for i in range(pn, len(classworks)):
+            start_time =  datetime.now()
+
+            file_metadata = {
+                'name': str(classworks[i].student.student_id),
+                'mimeType': 'application/vnd.google-apps.folder',
+                'parents' : [folder.get('id')]
+                }
+            fp = service.files().create(body=file_metadata, fields='id').execute()
 
 ## Content txt file
-            contents = serializers.serialize("json",classworks.filter(pk = classwork.pk))
-            filename = str(classwork.student.student_id) + '.txt'
+            contents = serializers.serialize("json",classworks.filter(pk = classworks[i].pk))
+            filename = str(classworks[i].student.student_id) + '.txt'
             file_metadata = { 
                     'name' : filename,
                     'parents' : [fp.get('id')]
@@ -251,8 +274,8 @@ class CollectFileView(View):
             gd_file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
                     
             
-            if classwork.works != None:
-                for work in classwork.works:
+            if classworks[i].works != None:
+                for work in classworks[i].works:
                     fileid = work.get('id')
                     filename = work.get('name')
                     file_metadata = {
@@ -266,4 +289,11 @@ class CollectFileView(View):
                         ).execute()
                     except: pass
             else: pass
+            end_time = datetime.now()
+            dt = end_time - start_time
+            print(i)
+            if dt.total_seconds() >= 5:
+                self.request.session['processid'] = i+1
+                return redirect('.')
+        del self.request.session["processid"]
         return redirect('../')   
