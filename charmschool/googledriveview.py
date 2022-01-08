@@ -30,4 +30,3 @@ class UploadFileView(TemplateView):
         print(id_list)
         return HttpResponse('Uploaded Successfully!!')
 
-

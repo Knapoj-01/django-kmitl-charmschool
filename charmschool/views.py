@@ -6,12 +6,16 @@ from django.utils.timezone import localtime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from copy import deepcopy
+
+from django.views.generic.base import View
 from .models import *
 from .forms import *
 from .mixins import *
 from .utils import *
 from .googleapiutils import *
 from django.contrib import messages
+from django.http import HttpResponse
+from django.core import serializers
 
 class IndexView(TemplateView):
     template_name='charmschool/index.html'
@@ -206,4 +210,60 @@ class MemberProfileView(GetInfoMixin, LoginRequiredMixin, TemplateView):
         context['classworks'] = queryset
         return context
     
-    
+
+class CollectFileView(View):
+    def post(self, request, group_pk, assignment_pk, *args, **kwargs):
+        q = Assignment.objects.filter(pk = assignment_pk)
+        assignment = q[0]
+        classworks = classwork_queryset_deserial(Classwork.objects.filter(assignment = assignment_pk))
+        service, creds = token_authentication(request)
+        response = service.files().list(
+            q="mimeType = 'application/vnd.google-apps.folder' and name = '%s'" % str(assignment),
+            spaces='drive', fields='files(id, name)').execute()
+        folder = response.get('files', [])
+
+        if folder: 
+            service.files().delete(fileId = folder[0].get('id')).execute()
+        folder = create_folder_if_not_exists(service, str(assignment))
+## Data txt file
+        contents = serializers.serialize("json",q)
+        filename = str(assignment) + '.txt'
+        file_metadata = { 
+                'name' : filename,
+                'parents' : [folder.get('id')]
+            }
+        fh = BytesIO(contents.encode('utf-8'))
+        media = MediaIoBaseUpload(fh, mimetype='text/plain')
+        gd_file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        
+        for classwork in classworks:
+            fp = create_folder_if_not_exists(service,str(classwork.student.student_id), folder.get('id'))
+
+## Content txt file
+            contents = serializers.serialize("json",classworks.filter(pk = classwork.pk))
+            filename = str(classwork.student.student_id) + '.txt'
+            file_metadata = { 
+                    'name' : filename,
+                    'parents' : [fp.get('id')]
+                }
+            fh = BytesIO(contents.encode('utf-8'))
+            media = MediaIoBaseUpload(fh, mimetype='text/plain')
+            gd_file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+                    
+            
+            if classwork.works != None:
+                for work in classwork.works:
+                    fileid = work.get('id')
+                    filename = work.get('name')
+                    file_metadata = {
+                        'name': filename,
+                        'parents': [fp.get('id')]
+                    }
+                    try:
+                        service.files().copy(
+                            fileId = str(fileid),
+                            body = file_metadata
+                        ).execute()
+                    except: pass
+            else: pass
+        return redirect('../')   

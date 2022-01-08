@@ -24,6 +24,7 @@ urlpatterns += [
     path('group/<int:group_pk>/content/<int:content_pk>/deletecontent/', DeleteContentView.as_view()),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/editcontent/', EditContentView.as_view()),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/deletecontent/', DeleteContentView.as_view()),
+    path('group/<int:group_pk>/assignment/<int:assignment_pk>/collectfiles/', CollectFileView.as_view()),
     #path('group/<int:group_pk>/assignment/<int:assignment_pk>/submit/', SubmitClassworkView.as_view()),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/unsubmit/', UnsubmitClassworkView.as_view()),
     path('group/<int:group_pk>/assignment/<int:assignment_pk>/grade/', GradeClassworkView.as_view()),
