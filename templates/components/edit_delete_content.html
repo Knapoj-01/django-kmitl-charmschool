@@ -10,12 +10,14 @@
 </button>
 </div>
 <div>
+{% if classwork_list %}
 <form action="collectfiles/" method="post">
     {%csrf_token%}
 <button type="submit" class="btn btn-success">
     <i class="bi bi-download me-2"></i>บันทึกไฟล์งานลงในไดร์ฟของผู้สอน
 </button>
 </form>
+{% endif %}
 </div>
 </div>
 <div class="modal fade" id="editModal" tabindex="-1" 
