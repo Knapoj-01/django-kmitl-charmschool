@@ -242,6 +242,7 @@ class CollectFileView(LoginRequiredMixin,View):
         return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>กำลังดำเนินการ.... ห้ามปิดแท็บหรือรีเฟรชเพจจนกว่าจะเสร็จสิ้น!!!</body></html>')
 
     def get(self, request, group_pk, assignment_pk, *args, **kwargs):
+        start_time =  datetime.now()
         if not request.session.has_key('processid'):
            return redirect('../')
         q = Assignment.objects.filter(pk = assignment_pk)
@@ -251,16 +252,15 @@ class CollectFileView(LoginRequiredMixin,View):
         service, creds = token_authentication(request)
         folder = create_folder_if_not_exists(service, str(assignment))     
         pn =  int(self.request.session['processid']) 
-        end_time = 0 
+  
         for i in range(pn, len(classworks)):
-            start_time =  datetime.now()
 
-            file_metadata = {
+            fp_metadata = {
                 'name': str(classworks[i].student.student_id),
                 'mimeType': 'application/vnd.google-apps.folder',
                 'parents' : [folder.get('id')]
                 }
-            fp = service.files().create(body=file_metadata, fields='id').execute()
+            fp = service.files().create(body=fp_metadata, fields='id').execute()
 
 ## Content txt file
             contents = serializers.serialize("json",classworks.filter(pk = classworks[i].pk))
@@ -294,6 +294,6 @@ class CollectFileView(LoginRequiredMixin,View):
             print(i)
             if dt.total_seconds() >= 2:
                 self.request.session['processid'] = i+1
-                return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>Uploading.. Please wait!!</body></html>')
+                return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>กำลังดำเนินการ.... ห้ามปิดแท็บหรือรีเฟรชเพจจนกว่าจะเสร็จสิ้น!!!<br>Process ID:{}</body></html>'.format(i+1))
         del self.request.session["processid"]
         return redirect('../')   
