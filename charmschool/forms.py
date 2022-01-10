@@ -19,20 +19,28 @@ class AddGroupDataForm(forms.ModelForm):
     name = forms.CharField(max_length=100, label='ชื่อกลุ่มเรียน', widget=forms.TextInput(attrs = defaultattr))
     field_order = ['name','description', 'study_on', 'start_time', 'end_time']
 
-gender_choices = [
-    ('นาย', 'นาย'),
-    ('นางสาว', 'นางสาว'),
-]
+
 class AddStudentForm(forms.ModelForm):
+    
     class Meta:
+        gender_choices = [
+            ('นาย', 'นาย'),
+            ('นางสาว', 'นางสาว'),
+]
         model = Student
         fields = '__all__'
         exclude = ['user', 'email_ref', 'group_ref']
+        gender = forms.ChoiceField(choices = gender_choices)
         widgets = {
-            'gender': forms.ChoiceField(choices = gender_choices),
             'name': forms.TextInput(attrs=defaultattr),
             'surname': forms.TextInput(attrs=defaultattr),
             'student_id': forms.TextInput(attrs=defaultattr),
+        }
+        labels= {
+            'gender': 'คำนำหน้าชื่อ',
+            'name': 'ชื่อจริง (ภาษาไทย)',
+            'surname': 'นามสกุล (ภาษาไทย)',
+            'student_id': 'รหัสนักศึกษา'
         }
     field_order = ['gender','name', 'surname', 'student_id']
 

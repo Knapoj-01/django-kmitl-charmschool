@@ -296,6 +296,7 @@ class CollectFileView(LoginRequiredMixin,View):
             if dt.total_seconds() >= 2:
                 self.request.session['processid'] = i+1
                 return HttpResponse('<html><head><meta http-equiv="Refresh" content="1"></head><body>กำลังดำเนินการ.... ห้ามปิดแท็บหรือรีเฟรชเพจจนกว่าจะเสร็จสิ้น!!!<br>Process ID:{}</body></html>'.format(i+1))
-        del self.request.session["processid"]
+        i = self.request.session["processid"]
         messages.success(request, r'<b>สำเร็จ:</b> ระบบทำการประมวลผล {} รายการเสร็จเรียบร้อยแล้ว'.format(i+1))
+        del self.request.session["processid"]
         return redirect('../')   
