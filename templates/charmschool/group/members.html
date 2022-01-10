@@ -13,9 +13,7 @@
             id="AddStudentForm">
             <form action="addstudent/" method="post">
                 {% csrf_token %}
-                {% with student_form as form %}
-                {% include "components/form_base.html" %}
-                {% endwith %}
+                {{student_form.as_p}}
                 <div class="d-sm-flex flex-sm-row-reverse">
                     <button class="btn btn-secondary" type='submit'> บันทึกข้อมูล</button>
                 </div>
