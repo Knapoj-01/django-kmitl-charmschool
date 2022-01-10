@@ -193,6 +193,7 @@ class GroupMembersView(GetInfoMixin,LoginRequiredMixin,ListView):
     context_object_name = 'members'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(self.kwargs.get('group_pk'),**kwargs)
+        context['student_form'] = AddStudentForm()
         return context
     def get_queryset(self):
         queryset = Student.objects.filter(group_ref=self.kwargs.get('group_pk')).order_by('student_id')
