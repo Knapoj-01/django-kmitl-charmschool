@@ -1,0 +1,32 @@
+<div>
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" 
+    data-bs-target="#deleteModal">
+    <i class="bi bi-trash me-2"></i>ลบ
+</button>
+</div>
+
+
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" 
+    aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">ลบ</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        โปรดคลิก 'ตกลง' เพื่อยืนยันการลบ {{member.gender}}{{member.name}} {{member.surname}} ออกจากกลุ่มเรียนนี้ <br>
+        <b>การกระทำนี้ไม่เป็นการลบบัญชีผู้ใช้ และงานทั้งหมดที่ทำส่งออกจากระบบ เพียงแต่ถอนรายชื่อออกจากกลุ่มเรียนเท่านั้น ถ้าหากต้องการเรียกคืนข้อมูลโปรดติดต่อผู้ดูแลระบบ</b>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+        <form action="removestudent/" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" name='delete'>ยืนยันการลบ</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>

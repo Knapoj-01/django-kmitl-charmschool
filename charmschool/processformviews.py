@@ -108,3 +108,36 @@ class GradeClassworkView(LoginRequiredMixin,View):
         messages.success(request, r'สำเร็จ: บันทึกคะแนนและข้อคิดเห็นของผู้สอนแล้ว')
         return redirect(request.POST.get('success_url'))
 
+class AddStudentView(LoginRequiredMixin,View):
+    def post(self,request,*args, **kwargs):
+        if 'group_pk' in kwargs.keys():
+            form = AddStudentForm(request.POST)
+            if form.is_valid():
+                model = form.save(commit= False)
+                model.email_ref = str(model.student_id)+'@kmitl.ac.th'
+                model.group_ref = int(kwargs.get('group_pk'))
+                model.save()
+                messages.success(request, r'สำเร็จ: เพิ่ม {} {} {} เข้าสู่กลุ่มเรียนแล้ว'.format(
+                    model.gender, model.name, model.surname
+                ))
+            else:
+                messages.warning(request, r'เกิดข้อผิดพลาด')
+            return redirect('../')
+
+class RemoveStudentView(View):
+    def post(self,request,*args, **kwargs):
+        if 'student_pk' in kwargs.keys():
+            student = Student.objects.get(pk = kwargs.get('student_pk'))
+            if student.user:
+                user = Student.objects.get(pk = kwargs.get('student_pk')).user
+                group = Group.objects.get(pk=kwargs.get('group_pk')) 
+                user.groups.remove(group)
+
+            student.group_ref = 0
+            student.save()
+            messages.success(request, r'สำเร็จ: ถอน {} {} {} ออกจากกลุ่มเรียนแล้ว'.format(
+                    student.gender, student.name, student.surname
+                ))
+        else:
+                messages.warning(request, r'เกิดข้อผิดพลาด')
+        return redirect('../../')

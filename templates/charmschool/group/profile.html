@@ -10,11 +10,13 @@
         </ul>
     </div>
     {% if request.user.is_instructor %}
-    <div class='d-flex justify-content-between my-3'>
+    {% include 'components/edit_delete_student.html' %}
+    <div class='d-flex justify-content-between m-3'>
         <h4 class='mb-2'>การบ้านที่ส่ง</h4>
         {% include "components/search_form.html" %}
     </div>
     {% if classworks %}
+    <div class='m-3'>
     <form action="grade/" method="post">
         {% csrf_token %}
         <input type="hidden" name="success_url" value="{{request.get_full_path}}">
@@ -67,8 +69,9 @@
     <button type="submit" name="submit" class="btn btn-warning"><i i class="bi bi-save me-2"></i> บันทึกการเปลี่ยนแปลง</button> 
     </div>
     </form>
+    </div>
     {% else %}
-    <span>ไม่มีรายการ</span> <br>
+    <div class='mx-3 mb-5'><span>ไม่มีรายการ</span></div>
     {% endif %}
     {% endif %}
 </div>

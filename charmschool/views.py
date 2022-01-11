@@ -300,3 +300,4 @@ class CollectFileView(LoginRequiredMixin,View):
         messages.success(request, r'<b>สำเร็จ:</b> ระบบทำการประมวลผล {} รายการเสร็จเรียบร้อยแล้ว'.format(i+1))
         del self.request.session["processid"]
         return redirect('../')   
+        
