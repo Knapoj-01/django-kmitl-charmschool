@@ -33,7 +33,7 @@
                            <br>
                             <b>ความคิดเห็น:</b> <br>
                             <input type="hidden" name="classwork_id" value="{{classwork.pk}}">
-                            <input type="text" name="feedback" class="form-control form-control-sm" {% if classwork.feedback %} value='{{classwork.feedback}}' {% endif %}>
+                            <textarea name="feedback" class="form-control form-control-sm" >{% if classwork.feedback %}{{classwork.feedback}} {% endif %}</textarea>
                             {% else %}
                             -
                             {% endif %}

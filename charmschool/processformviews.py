@@ -99,9 +99,11 @@ class GradeClassworkView(LoginRequiredMixin,View):
                 request.POST.getlist('classwork_id'), 
                 request.POST.getlist('score'), 
                 request.POST.getlist('feedback')):
-                if score:
+                if feedback:
                     classwork = Classwork.objects.get(pk = id)
-                    classwork.score = score
+                    if score == '':
+                        classwork.score = None
+                    else: classwork.score = score
                     classwork.feedback = feedback
                     classwork.graded = True
                     classwork.save()   
